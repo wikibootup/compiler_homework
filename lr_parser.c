@@ -76,8 +76,10 @@ void yyparse() {
         else if (i < 0) {
             reduce(-i);
         }
-        else
+        else {
             yyerror();
+            break;
+        }
     }
     while (i != ACC);
 }
@@ -101,7 +103,7 @@ void reduce(int i) {
 
 void yyerror() {
     printf("syntax error\n");
-    exit(1);
+    //exit(1);
 }
 
 int yylex() {
