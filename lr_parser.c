@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
-#define NUMBER 256
-#define PLUS 257
-#define STAR 258
-#define LPAREN 259
-#define RPAREN 260
-#define END 261
-#define EXPRESSION 0
-#define TERM 1
-#define FACTOR 2
-#define ACC     999
+#define NUMBER          256
+#define PLUS            257
+#define STAR            258
+#define LPAREN          259
+#define RPAREN          260
+#define END             261
+#define EXPRESSION      0
+#define TERM            1
+#define FACTOR          2
+#define ACC             999
 
 /*
 1 row : n th state number table
@@ -51,7 +52,11 @@ int yylex();
 
 
 int main() {
-    yyparse();
+    while(1) {
+        memset(stack, 0, sizeof(stack));
+        top = -1;
+        yyparse();
+    }
     return 0;
 }
 
@@ -62,7 +67,6 @@ void yyparse() {
     sym = yylex();
     do {
         i = action[stack[top]][sym-256];     // get relation
-        printf("i = %d\n", i);
 
         if (i == ACC)
             printf("success\n");
@@ -99,41 +103,52 @@ void yyerror() {
     printf("syntax error\n");
     exit(1);
 }
+
 int yylex() {
     static char ch = ' ';
     int i = 0;
+    int symbol_value;
 
-    while(ch == ' ' || ch == '\t' || ch == '\n') {
+    while(ch == ' ' || ch == '\t')
         ch = getchar();
-    }
+
+    printf("%c", ch);
+
     if (isdigit(ch)) {
         do
             ch = getchar();
         while (isdigit(ch));
-        return (NUMBER);
+        symbol_value = NUMBER;
     }
     else if (ch == '+') {
         ch = getchar();
-        return (PLUS);
+        symbol_value = PLUS;
     }
     else if (ch == '*') {
         ch = getchar();
-        return (STAR);
+        symbol_value = STAR;
     }
     else if (ch == '(') {
         ch = getchar();
-        return (LPAREN);
+        symbol_value = LPAREN;
     }
     else if (ch == ')') {
         ch = getchar();
-        return (RPAREN);
+        symbol_value = RPAREN;
+    }
+    else if (ch == '\n') {
+        ch = getchar();
+        symbol_value = END;
     }
     else if (ch == EOF) {
-        ch = getchar();
-        return (END);
-    }
-    else
+        printf("END OF FILE.");
+        exit(1);
+    }   
+    else {
         lex_error();
+    }
+
+    return symbol_value;
 }
 
 void lex_error() {
