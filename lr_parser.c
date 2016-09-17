@@ -145,7 +145,7 @@ int yylex() {
     else if (ch == EOF) {
         printf("END OF FILE.");
         exit(1);
-    }   
+    }
     else {
         lex_error();
     }
