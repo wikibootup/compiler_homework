@@ -42,6 +42,10 @@ int stack[1000];
 int top = -1;
 int sym;
 
+char yytext[32];
+int yyval;
+int value[1000];
+
 void push(int);
 void shift(int);
 void reduce(int);
@@ -69,7 +73,7 @@ void yyparse() {
         i = action[stack[top]][sym-256];     // get relation
 
         if (i == ACC)
-            printf("success\n");
+            printf("success, value = %d\n", value[top]);
         else if (i > 0) {
             shift(i);
         }
@@ -91,6 +95,7 @@ void push(int i) {
 
 void shift(int i) {
     push(i);
+    value[top] = yyval;
     sym = yylex();
 }
 
@@ -99,6 +104,23 @@ void reduce(int i) {
     top -= prod_length[i];
     old_top = top;
     push(go_to[stack[old_top]][prod_left[i]]);
+
+    switch (i) {
+        case 1: value[top] = value[old_top+1] + value[old_top+3];
+                break;
+        case 2: value[top] = value[old_top+1];
+                break;
+        case 3: value[top] = value[old_top+1] * value[old_top+3];
+                break;
+        case 4: value[top] = value[old_top+1];
+                break;
+        case 5: value[top] = value[old_top+2];
+                break;
+        case 6: value[top] = value[old_top+1];
+                break;
+        default: yyerror("parsing table error");
+
+    }
 }
 
 void yyerror() {
@@ -117,9 +139,13 @@ int yylex() {
     printf("%c", ch);
 
     if (isdigit(ch)) {
-        do
+        do {
+            yytext[i++] = ch;
             ch = getchar();
-        while (isdigit(ch));
+        } while (isdigit(ch));
+        yytext[i] = 0;
+        yyval = atoi(yytext);
+
         symbol_value = NUMBER;
     }
     else if (ch == '+') {
@@ -155,5 +181,5 @@ int yylex() {
 
 void lex_error() {
     printf("illegal token\n");
-    exit(1);
+    //exit(1);
 }
