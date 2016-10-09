@@ -19,17 +19,23 @@ program:
 
 statement:
         expression                      { printf("%d\n", $1); }
-        | LETTER EQL expression       { sym[$1] = $3; }
+        | LETTER EQL expression         { sym[$1] = $3; }
         ;
 
 expression:
-        NUMBER
-        | LETTER                      { $$ = sym[$1]; }
-        | expression '+' expression     { $$ = $1 + $3; }
-        | expression '-' expression     { $$ = $1 - $3; }
-        | expression '*' expression     { $$ = $1 * $3; }
-        | expression '/' expression     { $$ = $1 / $3; }
-        | '(' expression ')'            { $$ = $2; }
+        expression '+' term             { $$ = $1 + $3; }
+        | term
+        ;
+
+term:
+        term '*' factor                 { $$ = $1 * $3; }
+        | factor
+        ;
+
+factor:
+        '(' expression ')'              { $$ = $2; }
+        | LETTER                        { $$ = sym[$1]; }
+        | NUMBER                        { $$ = $1; }
         ;
 
 %%
