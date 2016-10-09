@@ -8,6 +8,8 @@ WS                      {DELIM}+
     #include "y.tab.h"
     #include <stdlib.h>
     void yyerror(char *);
+    char    *makeString();
+    extern int yylval;
 %}
 
 %%
@@ -22,21 +24,25 @@ WS                      {DELIM}+
                     return NUMBER;
                 }
 
+{LETTER}({LETTER}|{DIGIT})* { yylval = makeString(yytext); return(IDENT);}
+
+[-+()/*\n]      { return *yytext; }
+"\="            { return EQL; }
+
 {WS}            { }     /* skip whitespace */
 "//"[^\n]*      { }
-
-{LINE}          { return(NL);}
-"\+"            { return(PLUS); }
-"\-"            { return(MINUS); }
-"\/"            { return(DIVIDE); }
-"\*"            { return(STAR); }
-"\("            { return(LPAREN); }
-"\)"            { return(RPAREN); }
-"\="            { return(EQL); }
 
 .               yyerror("Unknown character");
 
 %%
+
+char *makeString(char *s)
+{
+   char *t;
+   t = malloc(strlen(s) + 1);
+   strcpy(t, s);
+   return t;
+}
 
 int yywrap(void) {
     return 1;
