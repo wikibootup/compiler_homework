@@ -13,37 +13,18 @@
 %%
 
 program:
-        program statement_list '\n'
+        program statement '\n'
         | /* NULL */
         ;
 
-statement_list  : statement_list statement
-        | statement
-        ;
-
 statement:
-        | IDENT EQL expression          { sym[$1] = $3; }
         expression                      { printf("%d\n", $1); }
+        | LETTER EQL expression       { sym[$1] = $3; }
         ;
 
 expression:
-        | expression '+' term           { $$ = $1 + $3; }
-        | term
-        ;
-
-term:
-        term '*' factor                 { $$ = $1 * $3; }
-        | factor
-        ;
-
-factor:
-        '(' expression ')'              { $$ = $2; }
-        | IDENT                         { $$ = sym[$1]; }
-        | NUMBER                        { $$ = $1; }
-        ;
-
-expression:
-        | VARIABLE                      { $$ = sym[$1]; }
+        NUMBER
+        | LETTER                      { $$ = sym[$1]; }
         | expression '+' expression     { $$ = $1 + $3; }
         | expression '-' expression     { $$ = $1 - $3; }
         | expression '*' expression     { $$ = $1 * $3; }
