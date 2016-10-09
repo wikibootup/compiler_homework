@@ -6,30 +6,35 @@
     int sym[26];
 %}
 
-%token INTEGER VARIABLE
-%left '+' '-'
-%left '*' '/'
+%token NUMBER LETTER EQL NL LPAREN RPAREN
+%left PLUS MINUS
+%left STAR DIVIDE
 
 %%
 
 program:
-        program statement '\n'
+        program statement_list
         | /* NULL */
         ;
 
+statement_list:
+        statement_list statement
+        | statement
+        ;
+
 statement:
-        expression                      { printf("%d\n", $1); }
-        | VARIABLE '=' expression       { sym[$1] = $3; }
+        expression                          { printf("%d\n", $1); }
+        | LETTER EQL expression             { sym[$1] = $3; }
         ;
 
 expression:
-        INTEGER
-        | VARIABLE                      { $$ = sym[$1]; }
-        | expression '+' expression     { $$ = $1 + $3; }
-        | expression '-' expression     { $$ = $1 - $3; }
-        | expression '*' expression     { $$ = $1 * $3; }
-        | expression '/' expression     { $$ = $1 / $3; }
-        | '(' expression ')'            { $$ = $2; }
+        NUMBER
+        | LETTER                      { $$ = sym[$1]; }
+        | expression PLUS expression     { $$ = $1 + $3; }
+        | expression MINUS expression     { $$ = $1 - $3; }
+        | expression STAR expression     { $$ = $1 * $3; }
+        | expression DIVIDE expression     { $$ = $1 / $3; }
+        | LPAREN expression RPAREN            { $$ = $2; }
         ;
 
 %%
