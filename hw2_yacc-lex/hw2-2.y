@@ -64,7 +64,10 @@ void insertIdent(char *s, int val)
     id = searchIdent(s);
 
     if (id)
+    {
         id ->value = val;
+        return;
+    }
  
     id = malloc(sizeof(A_ID));
 
