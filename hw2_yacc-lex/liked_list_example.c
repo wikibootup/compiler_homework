@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-void yyerror(char *);
-int yylex(void);
 
 typedef struct id {
    char *name;
@@ -13,10 +11,6 @@ A_ID *searchIdent();
 void insertIdent();
 int getValue();
 A_ID *head = NULL;
-
-void yyerror(char *s) {
-    fprintf(stderr, "%s\n", s);
-}
 
 int main(void) {
     insertIdent("aa", 10);
@@ -59,50 +53,37 @@ void insertIdent(char *s, int val)
     if(id)
     {
         id ->value = val;
-        return;
     }
+    else
+    {    
+        id = malloc(sizeof(A_ID));
 
-    id = malloc(sizeof(A_ID));
-    if (!id)
-        return; //  Error handling needed
-
-    id ->name = malloc(sizeof(s));
-    id ->name = s;
-    id ->value = val;
-    id ->link = NULL;
-
-    if(!head)
-    {
-        head = malloc(sizeof(A_ID));
+        id ->name = s;
+        id ->value = val;
+        id ->link = head;
         head = id;
-        return;
     }
-
-    id ->link = malloc(sizeof(A_ID));
-    id ->link = head;
-    head = id;
 }
 
 int getValue(char *s)
 {
     A_ID *id = searchIdent(s);
-    if(id == NULL)
+    if(!id)
     {
-        return 2;
+        printf("Undefined value : %s\n", s);
+        return 0;
     }
+
     return id ->value;
 }
 
 A_ID *searchIdent(char *s)
 {
     A_ID *id;
-    id = malloc(sizeof(A_ID));
     id = head;
 
-    while(id)
+    while(id && strcmp(id ->name, s) != 0)
     {
-        if(strcmp(id ->name, s) == 0)
-            break;
         id = id ->link;
     }
 
