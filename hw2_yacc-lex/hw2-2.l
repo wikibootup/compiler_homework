@@ -7,20 +7,21 @@ WS                      {DELIM}+
 %{
     #include "y.tab.h"
     #include <stdlib.h>
-    void yyerror(char *);
+    void    yyerror(char *);
+    char    *makeString();
 %}
 
 %%
-
-{LETTER}+        {
-                    yylval = *yytext - 'a';
-                    return LETTER;
-                }
 
 {DIGIT}+        {
                     yylval = atoi(yytext);
                     return NUMBER;
                 }
+
+{LETTER}({LETTER}|{DIGIT})* {
+                                yylval = makeString(yytext);
+                                return(IDENT);
+                            }
 
 [-+()/*\n]      { return *yytext; }
 "\="            { return EQL; }
@@ -34,4 +35,14 @@ WS                      {DELIM}+
 
 int yywrap(void) {
     return 1;
+}
+
+char *makeString(char *s)
+{
+    char *t;
+    printf("PRINT MAKE STRING\n");
+    t = malloc(strlen(s) + 1);
+    strcpy(t, s);
+
+    return t;
 }

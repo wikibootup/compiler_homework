@@ -1,6 +1,7 @@
 %{
     #include <stdio.h>
     #include <string.h>
+    #include <stdlib.h>
 
     void yyerror(char *);
     int yylex(void);
@@ -16,9 +17,7 @@
     A_ID *head = NULL;
 %}
 
-%token NUMBER LETTER NL EQL IDENT
-%left '+' '-'
-%left '*' '/'
+%token NUMBER EQL IDENT
 
 %%
 
@@ -29,7 +28,7 @@ program:
 
 statement:
         expression                      { printf("%d\n", $1); }
-        | LETTER EQL expression         { insertIdent($1, $3); }
+        | IDENT EQL expression          { insertIdent($1, $3); }
         ;
 
 expression:
@@ -44,7 +43,7 @@ term:
 
 factor:
         '(' expression ')'              { $$ = $2; }
-        | LETTER                        { $$ = getValue($1); }
+        | IDENT                         { $$ = getValue($1); }
         | NUMBER                        { $$ = $1; }
         ;
 
@@ -60,46 +59,45 @@ int main(void) {
 
 void insertIdent(char *s, int val)
 {
-    A_ID *id;// = NULL;
+    A_ID *id;
     id = searchIdent(s);
 
-    if (id)
+    if(id)
     {
         id ->value = val;
-        return;
     }
- 
-    id = malloc(sizeof(A_ID));
-
-    id ->name = s;
-    id ->value = val;
-    id ->link = NULL;
-
-    if (!head)
+    else
     {
-        head = id;
-        return;
-    }
+        id = malloc(sizeof(A_ID));
 
-    id ->link = head;
-    head = id;
+        id ->name = s;
+        id ->value = val;
+        id ->link = head;
+        head = id;
+    }
 }
 
 int getValue(char *s)
 {
-    return searchIdent(s) ->value;
+    A_ID *id = searchIdent(s);
+    if(!id)
+    {
+        printf("Undefined value : %s\n", s);
+        return 0;
+    }
+
+    return id ->value;
 }
 
 A_ID *searchIdent(char *s)
 {
-    A_ID *id = head;
+    A_ID *id;
+    id = head;
 
-    while(id)
+    while(id && strcmp(id ->name, s) != 0)
     {
-        if (id ->name == s)
-            return id;
         id = id ->link;
     }
 
-    return NULL;
+    return id;
 }
