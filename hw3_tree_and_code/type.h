@@ -81,8 +81,8 @@ typedef enum
 typedef enum
 {
     ID_NULL,ID_VAR,ID_FUNC,ID_PARM,ID_FIELD,ID_TYPE,ID_ENUM,
-    ID_STRUCT,ID_ENUM_LITERAL} ID_KIND; 
-} ID_KIND;
+    ID_STRUCT,ID_ENUM_LITERAL
+} ID_KIND; 
 
 typedef struct s_node
 {
