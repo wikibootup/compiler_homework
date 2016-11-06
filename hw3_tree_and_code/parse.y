@@ -222,7 +222,8 @@ labeled_statement
                                                 {$$=makeNode(N_STMT_LABEL_DEFAULT,NIL,$3,NIL);}
     ; 
 compound_statement
-    : LR                                        {$$=current_id;current_level++;} RR                                         {checkForwardReference();$$=makeNode(N_STMT_COMPOUND,$3,NIL,$4);current_id=$ 2;current_level--;}
+    : LR                                        {$$=current_id;current_level++;} declaration_list_opt statement_list_opt 
+RR                                         {checkForwardReference();$$=makeNode(N_STMT_COMPOUND,$3,NIL,$4);current_id=$2;current_level--;}
     ; 
 expression_statement
     : SEMICOLON                                 {$$=makeNode(N_STMT_EMPTY,NIL,NIL,NIL);}

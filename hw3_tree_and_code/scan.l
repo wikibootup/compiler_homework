@@ -101,9 +101,6 @@ char *makeString(char *s)
     return(t);
 }
 
-yywrap() {
-}
-
 int checkIdentifier(char *s) 
 {
     A_ID *id; 
