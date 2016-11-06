@@ -491,24 +491,20 @@ void syntax_error(int i,char *s) {
         case 12: printf("redeclaration of identifier %s",s); break;
         case 13: printf("undefined identifier %s",s); break;
         case 14: printf("illegal type specifier in formal parameter"); break;
-        %s",s);
         case 20: printf("illegal storage class in type specifiers"); break;
         case 21: printf("illegal function declarator"); break;
-        case 22: printf("conflicting parameter type in prototype function %s",s);
-        break;
+        case 22: printf("conflicting parameter type in prototype function %s",s); break;
         case 23: printf("empty parameter name"); break; 
         case 24: printf("illegal declaration specifiers"); break; 
         case 25: printf("illegal function specifiers"); break;
-        case 26: printf("illegal or conflicting return type in prototype function %s", s);
-        break;
+        case 26: printf("illegal or conflicting return type in prototype function %s", s); break;
         case 31: printf("undefined type for identifier %s",s); break;
-        case 32: 
-            printf("incomplete forward reference for identifier %s",s);
-            break;
+        case 32: printf("incomplete forward reference for identifier %s",s); break;
         default: printf("unknown"); break; 
+    }
+    if (strlen(yytext)==0) 
+    printf(" at end\n");
+    else
+        printf(" near %s\n", yytext);
 }
-        if (strlen(yytext)==0) 
-            printf(" at end\n");
-        else
-            printf(" near %s\n", yytext);
     
