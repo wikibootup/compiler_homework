@@ -366,7 +366,12 @@ A_ID *setStructDeclaratorListSpecifier(A_ID *id, A_TYPE *t) {
     A_ID *a; 
     a=id; 
     while (a) {
-        ** to be completed ** 
+        // ** to be completed ** -> completed 
+        if(searchIdentifierAtCurrentLevel(a->name, a->prev))
+            syntax_error(12, a->name);
+        a = setDeclaratorElementType(a, t);
+        a->kind = ID_FIELD;
+        a = a->link;
     }
     return(id);
 }
