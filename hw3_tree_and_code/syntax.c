@@ -251,10 +251,22 @@ A_ID *setDeclaratorType(A_ID *id, A_TYPE *t) {
     id->type=t; 
     return(id);
 }
+
 // set declarator type (or element type)
 A_ID *setDeclaratorElementType(A_ID *id, A_TYPE *t)
 {
-    ** to be completed **
+    // ** to be completed ** -> completed
+    A_TYPE *tt;
+    if(id->type == NIL)     // if id has no type, then assign that by argument immediately
+        id->type = t;
+    else                    // else type will be added into the tail of the id
+    {
+        tt = id->type;
+        while(tt->element_type)
+            tt = tt->element_type;
+        tt->element_type = t;
+    }
+    return(id);
 }
 
 // set declarator element type and kind
