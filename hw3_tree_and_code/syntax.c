@@ -297,7 +297,8 @@ A_ID *setFunctionDeclaratorSpecifier(A_ID *id, A_SPECIFIER *p) {
     if (a)
         if (a->kind!=ID_FUNC || a->type->expr)
             syntax_error(12,id->name);
-        else { // check prototype: parameters and return type
+        else {
+            // check prototype: parameters and return type
             // ** to be completed ** -> completed
             if(isNotSameFormalParameters(a->type->field, id->type->field))
                 // check all the field elements about types and different parmeter numbers
