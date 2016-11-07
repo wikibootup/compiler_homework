@@ -352,7 +352,13 @@ A_ID *setParameterDeclaratorSpecifier(A_ID *id, A_SPECIFIER *p) {
     // check papameter storage class && void type 
     if (p->stor || p->type==void_type)
         syntax_error(14); 
-    ** to be completed **
+    // ** to be completed ** -> completed
+    // check parameter storage class && void type
+    if(p->stor || p->type == void_type)
+        syntax_error(14);
+    setDefaultSpecifier(p);
+    id = setDeclaratorElementType(id, p->type);
+    id->kind = ID_PARM;
     return(id);
 }
 
