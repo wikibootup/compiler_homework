@@ -282,13 +282,29 @@ A_ID *setFunctionDeclaratorSpecifier(A_ID *id, A_SPECIFIER *p) {
     if (p->stor)
         syntax_error(25); 
     setDefaultSpecifier(p);
-// check check if there is a function identifier immediately before '(' ** to be completed **
-// check redeclaration a=searchIdentifierAtCurrentLevel(id->name,id->prev);
+// check check if there is a function identifier immediately before '(' 
+// ** to be completed ** -> completed, (and this was the midterm ex. t_t)
+    if(id->type->kind != T_FUNC) {
+        syntax_error(21);
+        return(id);
+    }
+    else {
+        id = setDeclaratorElementType(id, p->type);
+        id->kind = ID_FUNC;
+    }
+// check redeclaration
+    a = searchIdentifierAtCurrentLevel(id->name,id->prev);
     if (a)
         if (a->kind!=ID_FUNC || a->type->expr)
             syntax_error(12,id->name);
         else { // check prototype: parameters and return type
-                ** to be completed ** 
+            // ** to be completed ** -> completed
+            if(isNotSameFormalParameters(a->type->field, id->type->field))
+                // check all the field elements about types and different parmeter numbers
+                syntax_error(22, a->name);
+            if(isNotSameType(a->type->element_type, id->type->element_type))
+                // return type is located in id->type->element_type.
+                syntax_error(26, a->name);
         }
     // change parameter scope and check empty name 
     a=id->type->field;
