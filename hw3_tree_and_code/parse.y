@@ -99,7 +99,8 @@ struct_type_specifier
         RR {
             checkForwardReference(); 
             $$ = setTypeField($3, $6); 
-            current_level--;current_id = $5;
+            current_level--;
+            current_id = $5;
         }
     | struct_or_union                           {$$ = makeType($1);}
         LR {$$ = current_id; current_level++;} struct_declaration_list 
