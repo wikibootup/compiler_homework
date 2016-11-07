@@ -328,9 +328,20 @@ A_ID *setDeclaratorListSpecifier(A_ID *id, A_SPECIFIER *p) {
     a=id;
     while (a) {
         if (strlen(a->name) && searchIdentifierAtCurrentLevel(a->name,a->prev))
-            syntax_error(12,a->name); ** to be completed **
+            syntax_error(12,a->name);
+            // ** to be completed ** -> completed
+            a = setDeclaratorElementType(a, p->type);
+            if(p->stor == S_TYPEDEF)
+                a->kind = ID_TYPE;
+            else if(a->type->kind == T_FUNC)
+                a->kind = ID_TYPE;
+            else
+                a->kind = ID_VAR;
+            a->specifier = p->stor;     // id's specifier should be storage class of A_SPECIFIER's stor
+            if(a->specifier == S_NULL)
+                a->specifier = S_AUTO;
+            a = a->link;
     }
-
     return(id);
 }
 // set declarator_list type and kind
