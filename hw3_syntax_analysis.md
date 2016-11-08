@@ -305,8 +305,81 @@ No more node at s==3
 
 2-4. 원시 코드 변경 아이디어
 
-3. 구현 방법
+기존에 파싱트리의 구조를 유지하되, 노드명을 출력하는 대신 명칭과 값을 출력하는 방식을 택하기로 하였다. 즉, 넌터미널 기호 대신 터미널 기호로 대체하기로 하였다.다르게 말해서 메타 정보 대신 정보 그 자체를 출력해주기로 하였다. 예를 들면, 타입 노드로부터 그 타입의 명칭 등 메타 정보를 출력하는 대신 타입 이름과 그 사이에 필요한 정보, 예를 들면 괄호 등을 넣어주었다. 그 실제 구현의 예는 아래와 같다.
+
+```c
+case T_FUNC: t->prt=TRUE;
+    printf("(");
+    //printf("FUNCTION\n");
+    //print_space(s);
+    //printf("| PARAMETER\n");
+    prt_A_ID_LIST(t->field,s+2);
+    printf(")");
+```
 
 4. 결과
+===
+
+* 테스트 파일은 위의 파싱트리 테스트의 경우와 동일하다.
+
+```sh
+$ ./a.out test5.c
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+}
+```
+
+- 메인 함수의 이름, 
+- 인자를 위한 괄호, 
+- 리턴 타입 정수형의 명시
+- compound statement의 중괄호 및 개행
+
+```sh
+$ ./a.out test4.c
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+a      int, b      int}
+```
+
+- 정수형 변수 a, b의 선언
+
+```sh
+$ ./a.out test3.c
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+a      int, b      int, c      int, d      int}
+```
+
+- 초기화 연산 및 대입 연산이 아직 구현되지 않았다.
+- 생각보다도 어려웠다.
+
+```sh
+$ ./a.out test2.c
+
+start syntax analysis
+======= syntax tree ==========
+bigger (p1     int, p2     int)<RETURN TYPE: int>
+{
+}
+, func ()<RETURN TYPE: int>
+{
+}
+, main ()<RETURN TYPE: int>
+{
+a      int, b      int}
+```
+
+- 함수 호출과 파라미터 괄호에 담긴 변수 리스트(ID_LIST)에 대한 명칭 및 타입
+- 각 함수는 분리되어있으며 독립된 compound statement을 가짐
 
 5. 소스코드
+
