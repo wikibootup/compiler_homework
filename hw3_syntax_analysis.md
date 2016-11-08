@@ -31,7 +31,15 @@ LR 파서를 기본으로 하기 때문에 문법 검사 시에 최하위 요소
 2. 출력 오류 : 존재하지 않는 하위 노드 출력
 
 1. yywrap은 토큰을 다 읽었을 때(프로세스 종료시), 0을 반환하면 추가적인 동작을 요구하기 때문에 이 부분이 구현되어 있지 않으면 무한 루프에 빠진다. 반면, 1은 수행을 마쳤음을 의미한다. (http://epaperpress.com/lexandyacc/prl.html 참조)
-2. `print.c`에서 `void prt_initializer(A_NODE *node, int s)` 함수는 하위 노드를 위한 함수를 재귀적으로 호출하기 때문에 더이상 존재하지 않는 노드에 대한 예외처리가 필요하다.
+2. `print.c`에서 `void prt_initializer(A_NODE *node, int s)` 함수는 하위 노드를 위한 함수를 재귀적으로 호출하기 때문에 더이상 존재하지 않는 노드에 대한 예외처리가 필요하다. 본 코드에서는 이것을 명시하기 위하여 트리 중간에 해당 정보를 트리 레벨과 함께 출력해주었다.
+
+```c
+void prt_initializer(A_NODE *node, int s) {
+    if(!node)
+        printf("No more node at s==%d\n", s);
+        return;
+    ...
+```
 
 2-3. 파싱 트리 사례 분석
 
