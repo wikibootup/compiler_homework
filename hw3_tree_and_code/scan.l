@@ -7,6 +7,7 @@ ws {delim}+
 %{
     #include "y.tab.h"
     #include "type.h"
+    
     extern int yylval;
     extern int line_no;
     extern A_ID *current_id;
@@ -128,10 +129,11 @@ int checkIdentifier(char *s)
         yylval = id->name; 
         return(IDENTIFIER);
     }
-    return(1);
 }
 
 yywrap()
 {
-    return(0);
+    return(1); 
+    // 1 means done, 0 means need more implementation
+    // WARNING :: 0 causes infinite loop when token exausted.
 }
