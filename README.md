@@ -1,5 +1,15 @@
 # compiler_homework
 
+```
+$ lex <lex file name>.l
+$ yacc -d <yacc file name>.y
+$ cc y.tab.c lex.yy.c main.c syntax.c print.c [and so on] -ll
+$ a.out <test file>
+
+in yacc
+-d : debug
+```
+
 Refrences
 ---
 
