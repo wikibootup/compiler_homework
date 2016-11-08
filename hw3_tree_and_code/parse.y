@@ -145,6 +145,7 @@ enumerator_list
     ;
 enumerator
     : IDENTIFIER {$$=setDeclaratorKind(makeIdentifier($1),ID_ENUM_LITERAL);}
+    | IDENTIFIER {$$=setDeclaratorKind(makeIdentifier($1),ID_ENUM_LITERAL);}
         ASSIGN expression                       {$$ = setDeclaratorInit($2,$4);}
     ;
 declarator
@@ -160,8 +161,7 @@ direct_declarator
     | LP declarator RP {$$ = $2;}
     | direct_declarator LB constant_expression_opt RB
                                                 {$$ = setDeclaratorElementType($1, setTypeExpr(makeType(T_ARRAY),$3));} 
-    | direct_declarator LP                      {$$ = current_id; current_level++;}
-        parameter_type_list_opt RP              {checkForwardReference(); current_id=$3; current_level--; $$ = setDeclaratorElementType($1,setTypeField(makeType(T_FUNC),$4));}
+    | direct_declarator LP                      {$$ = current_id; current_level++;} parameter_type_list_opt RP              {checkForwardReference(); current_id=$3; current_level--; $$ = setDeclaratorElementType($1,setTypeField(makeType(T_FUNC),$4));}
     ;
 parameter_type_list_opt
     :                                           {$$ = NIL;}
@@ -179,8 +179,8 @@ parameter_list
     ; 
 parameter_declaration
     : declaration_specifiers declarator         {$$=setParameterDeclaratorSpecifier($2,$1);}
-| declaration_specifiers abstract_declarator_opt
-{$$=setParameterDeclaratorSpecifier(setDeclaratorType(makeDummyIdentifier(),$2),$1) ;}
+    | declaration_specifiers abstract_declarator_opt
+                                                {$$=setParameterDeclaratorSpecifier(setDeclaratorType(makeDummyIdentifier(),$2),$1) ;}
     ; 
 abstract_declarator_opt
     :                                           {$$ = NIL;}
@@ -201,7 +201,8 @@ direct_abstract_declarator
                                                 {$$=setTypeElementType($1,setTypeExpr(makeType(T_FUNC),$3));} 
     ;
 statement_list_opt 
-    :                                           {$$=makeNode(N_STMT_LIST_NIL,NIL,NIL,NIL);} | statement_list {$$=$1;} 
+    :                                           {$$=makeNode(N_STMT_LIST_NIL,NIL,NIL,NIL);} 
+    | statement_list                            {$$=$1;} 
     ;
 statement_list
     : statement                                 {$$=makeNode(N_STMT_LIST,$1,NIL,makeNode(N_STMT_LIST_NIL,NIL,NIL,NIL));} 
@@ -375,7 +376,7 @@ primary_expression
     | FLOAT_CONSTANT                            {$$=makeNode(N_EXP_FLOAT_CONST,NIL,$1,NIL);} 
     | CHARACTER_CONSTANT                        {$$=makeNode(N_EXP_CHAR_CONST,NIL,$1,NIL);}
     | STRING_LITERAL                            {$$=makeNode(N_EXP_STRING_LITERAL,NIL,$1,NIL);}
-| LP expression RP {$$=$2;} 
+    | LP expression RP                          {$$=$2;} 
     ;
 type_name
     : declaration_specifiers abstract_declarator_opt
@@ -387,6 +388,6 @@ extern char *yytext;
 
 yyerror(char *s)
 {
-syntax_err++;
-printf("line %d: %s near %s \n", line_no, s,yytext);
+    syntax_err++;
+    printf("line %d: %s near %s \n", line_no, s,yytext);
 }
