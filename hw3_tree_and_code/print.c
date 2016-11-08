@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "type.h"
 char * node_name[] = {
 "N_NULL",
@@ -57,7 +59,11 @@ void prt_program(A_NODE *node, int s) {
 }
 
 void prt_initializer(A_NODE *node, int s) {
-    print_node(node,s); 
+    if(!node)
+        printf("No more node at s==%d\n", s);
+        return;
+
+    print_node(node,s);
     switch(node->name) {
     case N_INIT_LIST: 
         prt_initializer(node->llink, s+1); 
@@ -83,9 +89,9 @@ void prt_expression(A_NODE *node, int s) {
         case N_EXP_STRING_LITERAL : prt_STRING(node->clink, s+1); break;
         case N_EXP_ARRAY : prt_expression(node->llink, s+1); prt_expression(node->rlink, s+1); break;
         case N_EXP_FUNCTION_CALL : prt_expression(node->llink, s+1); prt_arg_expr_list(node->rlink, s+1); break;
-        case N_EXP_STRUCT : 
+        case N_EXP_STRUCT :
         case N_EXP_ARROW : prt_expression(node->llink, s+1); prt_STRING(node->rlink, s+1); break;
-        case N_EXP_POST_INC : 
+        case N_EXP_POST_INC :
         case N_EXP_POST_DEC :
         case N_EXP_PRE_INC :
         case N_EXP_PRE_DEC :
@@ -97,19 +103,19 @@ void prt_expression(A_NODE *node, int s) {
         case N_EXP_SIZE_EXP : prt_expression(node->clink, s+1); break;
         case N_EXP_SIZE_TYPE : prt_A_TYPE(node->clink, s+1); break;
         case N_EXP_CAST : prt_A_TYPE(node->llink, s+1); prt_expression(node->rlink, s+1); break;
-        case N_EXP_MUL : 
-        case N_EXP_DIV : 
-        case N_EXP_MOD : 
-        case N_EXP_ADD : 
-        case N_EXP_SUB : 
-        case N_EXP_LSS : 
-        case N_EXP_GTR : 
-        case N_EXP_LEQ : 
-        case N_EXP_GEQ : 
-        case N_EXP_NEQ : 
-        case N_EXP_EQL : 
-        case N_EXP_AND : 
-        case N_EXP_OR : 
+        case N_EXP_MUL :
+        case N_EXP_DIV :
+        case N_EXP_MOD :
+        case N_EXP_ADD :
+        case N_EXP_SUB :
+        case N_EXP_LSS :
+        case N_EXP_GTR :
+        case N_EXP_LEQ :
+        case N_EXP_GEQ :
+        case N_EXP_NEQ :
+        case N_EXP_EQL :
+        case N_EXP_AND :
+        case N_EXP_OR :
         case N_EXP_ASSIGN : prt_expression(node->llink, s+1); prt_expression(node->rlink, s+1); break;
         default :
             printf("****syntax tree error******");
@@ -263,5 +269,5 @@ void prt_A_ID(A_ID *id, int s) {
            prt_expression(id->init,s+2);
     }
     else
-    prt_initializer(id->init,s+2); 
+    prt_initializer(id->init,s+2);
 }
