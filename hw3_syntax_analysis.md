@@ -42,6 +42,38 @@ void prt_initializer(A_NODE *node, int s) {
 ```
 
 2-3. 파싱 트리 사례 분석
+---
+
+1) 메인 함수만 존재
+
+```sh
+$ cat test5.c
+main()
+{}
+```
+
+```sh
+$ ./a.out test5.c
+
+start syntax analysis
+======= syntax tree ==========
+N_PROGRAM
+| (ID="main") TYPE:8b27988 KIND:FUNC SPEC=NULL LEV=0
+| | TYPE
+| | | FUNCTION
+| | | | PARAMETER
+| | | | TYPE
+| | | | | (int)
+| | | | BODY
+| | | | | N_STMT_COMPOUND
+| | | | | | N_STMT_LIST_NIL
+No more node at s==3
+```
+**과정 설명**
+
+- N_PROGRAM으로부터 시작된 노드는 메인 함수를 ID로 확인하여 타입 노드로 접근
+- 타입 노드로부터 타입은 함수, 리턴 타입은 정수형, 몸체로는 STATEMENT COMPOUND를 가짐을 확인
+- 리스트의 각 원소들을 확인하다가(여기서는 한개도 없다) 종료.
 
 2-4. 원시 코드 변경 아이디어
 
