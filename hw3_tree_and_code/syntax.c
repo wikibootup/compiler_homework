@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "type.h"
 #include "y.tab.h"
 extern char *yytext;
@@ -42,6 +43,7 @@ A_TYPE *setTypeStructOrEnumIdentifier(T_KIND,char *,ID_KIND);
 BOOLEAN isNotSameFormalParameters(A_ID *, A_ID *); 
 BOOLEAN isNotSameType(A_TYPE *, A_TYPE *); 
 BOOLEAN isPointerOrArrayType(A_TYPE *);
+
 void syntax_error();
 void initialize();
 // make new node for syntax tree
@@ -394,9 +396,9 @@ A_TYPE *setTypeElementType(A_TYPE *t, A_TYPE *s) {
     while (q->element_type) 
         q=q->element_type;
     q->element_type=s;
-}
     return(t);
 }
+
 // set type field
 A_TYPE *setTypeField(A_TYPE *t, A_ID *n) {
     t->field=n; 
@@ -415,14 +417,13 @@ A_TYPE *setTypeStructOrEnumIdentifier(T_KIND k, char *s, ID_KIND kk) {
     a=searchIdentifierAtCurrentLevel(s,current_id); 
     if (a)
         if (a->kind==kk && a->type->kind==k) 
-            if (a->type->field)
-                else 
-                    syntax_error(12,s);
+            if (a->type->field) 
+                syntax_error(12,s);
             else
                 return(a->type);
         else
             syntax_error(12,s);
-// make a new struct (or enum) identifier
+    // make a new struct (or enum) identifier
     id=makeIdentifier(s); 
     t=makeType(k); 
     id->type=t; 
@@ -458,7 +459,10 @@ BOOLEAN isNotSameType(A_TYPE *t1, A_TYPE *t2) {
         return (isNotSameType(t1->element_type,t2->element_type));
     else
         return (t1!=t2);
-
+}
+BOOLEAN isPointerOrArrayType(A_TYPE *t) {
+    return (t && (t->kind == T_POINTER || t->kind == T_ARRAY));
+}
 void initialize() 
 {
     // primitive data types
@@ -554,8 +558,7 @@ void syntax_error(int i,char *s) {
         default: printf("unknown"); break; 
     }
     if (strlen(yytext)==0) 
-    printf(" at end\n");
+        printf(" at end\n");
     else
         printf(" near %s\n", yytext);
-}
-    
+}    
