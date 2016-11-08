@@ -17,7 +17,7 @@
     A_ID *head = NULL;
 %}
 
-%token NUMBER EQL IDENT
+%token NUMBER EQL IDENT LETTER
 
 %%
 
