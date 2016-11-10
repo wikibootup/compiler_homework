@@ -171,7 +171,7 @@ void prt_for_expression(A_NODE *node, int s) {
     }
 }
 void prt_integer(int a, int s) {
-    //print_space(s); 
+    //print_space(s);
     //printf("%d", a);
 }
 void prt_STRING(char *str, int s) {
@@ -274,7 +274,7 @@ void prt_A_ID_NAME(A_ID *id, int s) {
 void prt_A_ID(A_ID *id, int s) {
 //    print_space(s);
     printf("%s", id->name);
-    print_space(s);
+    // print_space(s);
    
     if (id->type) {
         //print_space(s);
@@ -284,9 +284,15 @@ void prt_A_ID(A_ID *id, int s) {
     if (id->init) 
     { 
         //print_space(s);
-        //printf("| INIT\n");
+//        printf("| INIT\n");
+        printf("<set as %d>", id->init->clink->clink);
+        // N_INIT_LIST_ONE(no.57) -> clink : real value
+      
         if (id->kind==ID_ENUM_LITERAL)
+        {
+            printf("aaaaaa");
            prt_expression(id->init,s+2);
+        }
     }
     else
     prt_initializer(id->init,s+2);
