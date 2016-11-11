@@ -41,7 +41,8 @@ void print_node(A_NODE *node, int s) {
 }
 void print_space(int s) {
     int i;
-    for(i=1; i<=s; i++) printf(" ");
+//    for(i=1; i<=s; i++) printf(" ");
+printf(" ");
 }
 void print_ast(A_NODE *node) {
     printf("======= syntax tree ==========\n"); 
@@ -255,9 +256,16 @@ void prt_A_TYPE(A_TYPE *t, int s) {
 void prt_A_ID_LIST(A_ID *id, int s) {
     while (id) {
         prt_A_ID(id,s);
+        if(id->kind == ID_VAR)
+            printf(";\n");
         id=id->link;
+       
         if(id)
-            printf(", ");
+        {
+            if(id->kind == ID_PARM)
+                printf(", ");
+//            printf("kind : %d\n", id->kind);
+        }
     } 
 }
 
@@ -277,13 +285,13 @@ void prt_A_ID(A_ID *id, int s) {
     // print_space(s);
    
     if (id->type) {
-        //print_space(s);
+        print_space(s);
         //printf("| TYPE\n"); 
         prt_A_TYPE(id->type,s+2);
     }
     if (id->init) 
     { 
-        //print_space(s);
+        print_space(s);
 //        printf("| INIT\n");
         printf("<set as %d>", id->init->clink->clink);
         // N_INIT_LIST_ONE(no.57) -> clink : real value
