@@ -4,11 +4,11 @@
     #include <stdlib.h>
 
     void yyerror(char *);
-    int binToDec(char digit);
-    void binInit();
+    void binToDec(char digit);
+    void binInit();             // initialize dec to 0 when '\n' inserted 
     int yylex(void);
-    int decVal;
-    int binUnit;
+    int dec;                    // decimal value
+    const int OFFSET = 48;      // for ascii 0
 %}
 
 %token BIN NL
@@ -21,8 +21,8 @@ program:
         ;
 
 converter:
-    BIN                 { printf("wow\n"); }
-    | NL              { printf("no\n"); }
+    BIN                 { printf("%c", $1); binToDec($1); }
+    | NL                { printf(" -> %d\n", dec); binInit(); }
     ;
 
 %%
@@ -35,15 +35,13 @@ int main(void) {
     yyparse();
 }
 
-int binToDec(char digit)
+void binToDec(char digit)
 {
-//    printf("digit = %c", digit);
-//    decVal += atoi(digit) << binUnit++;
-    return 50;
+    dec = dec << 1;         // already inserted value LS 1
+    dec += (digit-OFFSET);  // input value is inserted
 }
 
 void binInit()
 {
-    decVal = 0;
-    binUnit = 0;
+    dec = 0;
 }

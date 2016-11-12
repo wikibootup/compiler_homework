@@ -9,7 +9,7 @@ NEW_LINE                    [\n]
 
 %%
 
-{BIN_DIGIT}                 { return BIN; }
+{BIN_DIGIT}                 { yylval = *yytext; return BIN; }
 {NEW_LINE}                  { return NL; }
 
 %%
