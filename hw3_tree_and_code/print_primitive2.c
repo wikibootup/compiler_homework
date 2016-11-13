@@ -293,12 +293,21 @@ void prt_A_ID(A_ID *id, int s) {
     { 
         print_space(s);
 //        printf("| INIT\n");
-        printf("<set as %d>", id->init->clink->clink);
-        // N_INIT_LIST_ONE(no.57) -> clink : real value
-      
+        A_TYPE *temp_type = id->type;
+            if(temp_type == 0)
+                printf("<set as NULL>", id->init->clink->clink);
+            else if(temp_type == int_type)
+                printf("<set as %d>", id->init->clink->clink);
+            else if(temp_type == float_type)
+                printf("<float set as %f>", id->init->clink->clink);
+            else if(temp_type == char_type)
+                if(id->init->clink->clink > 255) // char or char*
+                    printf("<set as %s>", id->init->clink->clink);
+                else
+                    printf("<set as %c>", id->init->clink->clink);
+
         if (id->kind==ID_ENUM_LITERAL)
         {
-            printf("aaaaaa");
            prt_expression(id->init,s+2);
         }
     }
