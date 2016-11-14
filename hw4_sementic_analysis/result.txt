@@ -1,0 +1,185 @@
+in test2.c
+```c
+int bigger(int p1, int p2)
+{
+    if(p1 > p2)
+        return p1;
+    else
+        return p2;
+}
+
+func()
+{
+
+}
+
+main()
+{
+    int a = 5, b = 10;
+    func();
+	bigger(a, b);
+}
+```
+$ ./a.out test2.c
+```sh
+
+start syntax analysis
+======= syntax tree ==========
+bigger (p1 int, p2 int)<RETURN TYPE: int>
+{
+}
+func ()<RETURN TYPE: int>
+{
+}
+main ()<RETURN TYPE: int>
+{
+a int <set as 5>;
+b int <set as 10>;
+}
+```
+in test3.c
+```c
+main()
+{
+    int a, b = 10;
+	int c, d;
+
+    a = b;
+    b = a+b;
+}
+```
+$ ./a.out test3.c
+```sh
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+a int;
+b int <set as 10>;
+c int;
+d int;
+}
+```
+in test4.c
+```c
+main()
+{
+    int a, b = 10;
+}
+```
+$ ./a.out test4.c
+```sh
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+a int;
+b int <set as 10>;
+}
+```
+in test5.c
+```c
+main()
+{}
+```
+$ ./a.out test5.c
+```sh
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+}
+```
+```
+in test7.c
+```c
+main(int argc, char *argv[])
+{
+    int a, b = 10;
+    return 0;
+}
+```
+$ ./a.out test7.c
+```sh
+
+start syntax analysis
+======= syntax tree ==========
+main (argc int, argv  char 1)<RETURN TYPE: int>
+{
+a int;
+b int <set as 10>;
+}
+```
+in test8.c
+```c
+main()
+{
+    char *a = "THIS IS STRING\n";
+}
+```
+$ ./a.out test8.c
+```sh
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+a char 1 <set as "THIS IS STRING\n">;
+}
+```
+in test9.c
+```c
+switch (kim) {
+    case 10+1: kim=kim*2+1;
+    default: for (i=0;i<5;i++);
+}
+```
+$ ./a.out test9.c
+```sh
+
+start syntax analysis
+line 1: syntax error near switch 
+```
+in test10.c
+```c
+int i = 0;
+switch(i)
+{
+    case 0: break;
+    default: break;
+}
+```
+$ ./a.out test10.c
+```sh
+
+start syntax analysis
+line 2: syntax error near switch 
+```
+in test11.c
+```c
+main()
+{
+    int a = 10;
+    float pi = 3.14;
+    char* hello = "hello";
+    int* ip = &a;
+    char symbol = 's';
+}
+```
+$ ./a.out test11.c
+```sh
+
+start syntax analysis
+======= syntax tree ==========
+main ()<RETURN TYPE: int>
+{
+a int <set as 10>;
+pi float <float set as 0.000000>;
+hello char 1 <set as "hello">;
+ip int <set as 136853472>;
+symbol char 1 <set as s>;
+}
+```
