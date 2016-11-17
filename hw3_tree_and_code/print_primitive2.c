@@ -299,7 +299,7 @@ void prt_A_ID(A_ID *id, int s) {
             else if(temp_type == int_type)
                 printf("<set as %d>", id->init->clink->clink);
             else if(temp_type == float_type)
-                printf("<float set as %f>", id->init->clink->clink);
+                printf("<float set as %s>", id->init->clink->clink); // float type stored as string. and why? 
             else if(temp_type == char_type)
                 if(id->init->clink->clink > 255) // char or char*
                     printf("<set as %s>", id->init->clink->clink);
