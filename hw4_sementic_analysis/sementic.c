@@ -7,7 +7,8 @@ void set_literal_address(A_NODE *);
 int put_literal(A_LITERAL, int);
 void sem_program(A_NODE *);
 A_TYPE*sem_expression(A_NODE *);
-int sem_statement(A_NODE *, int, A_TYPE *, BOOLEAN, BOOLEAN, BOOLEAN); int sem_statement_list(A_NODE *, int, A_TYPE *, BOOLEAN, BOOLEAN, BOOLEAN);
+int sem_statement(A_NODE *, int, A_TYPE *, BOOLEAN, BOOLEAN, BOOLEAN); 
+int sem_statement_list(A_NODE *, int, A_TYPE *, BOOLEAN, BOOLEAN, BOOLEAN);
 void sem_for_expression(A_NODE *);
 int sem_A_TYPE(A_TYPE *) ;
 int sem_declaration_list(A_ID *, int);
@@ -53,24 +54,34 @@ int semantic_err=0;
 A_LITERAL literal_table[LIT_MAX];
 int literal_no=0;
 int literal_size=0;
+
 void semantic_analysis(A_NODE *node) {
-sem_program(node); set_literal_address(node);
+    sem_program(node); 
+    set_literal_address(node);
 }
+
 void set_literal_address(A_NODE *node) {
-int i;
-for (i=1;i<=literal_no; i++)
-literal_table[i].addr+=node->value; node->value+=literal_size;
+    int i;
+    for (i=1;i<=literal_no; i++)
+        literal_table[i].addr+=node->value; 
+    node->value+=literal_size;
 }
 void sem_program(A_NODE *node) {
-int i; switch(node->name) {
-case N_PROGRAM : i=sem_declaration_list(node->clink,12); node->value=global_address;
-break;
-default : semantic_error(90,node->line); break;
+    int i; 
+    switch(node->name) {
+    case N_PROGRAM : 
+        i = sem_declaration_list(node->clink,12); // first parm addr = 12
+        node->value = global_address;
+        break;
+    default :
+        semantic_error(90,node->line); 
+        break;
+    }
 }
 *setTypeElementType(A_TYPE *,A_TYPE *);
 *makeType(T_KIND); setTypeSize(A_TYPE *,int); semantic_warning(int, int); semantic_error();
 *makeNode(NODE_NAME, A_NODE *, A_NODE *,A_NODE *);
-}
+
 int put_literal(A_LITERAL lit, int ll) {
 float ff;
 if (literal_no >=LIT_MAX)
