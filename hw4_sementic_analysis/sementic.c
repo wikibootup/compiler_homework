@@ -60,6 +60,7 @@ void semantic_analysis(A_NODE *node) {
     set_literal_address(node);
 }
 
+// 프로그램 실행시 상수 영역이 보관되는 주소 계산
 void set_literal_address(A_NODE *node) {
     int i;
     for (i=1;i<=literal_no; i++)
