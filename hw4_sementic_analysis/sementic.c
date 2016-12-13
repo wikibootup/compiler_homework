@@ -67,6 +67,7 @@ void set_literal_address(A_NODE *node) {
         literal_table[i].addr+=node->value; 
     node->value+=literal_size;
 }
+
 void sem_program(A_NODE *node) {
     int i; 
     switch(node->name) {
@@ -79,175 +80,279 @@ void sem_program(A_NODE *node) {
         break;
     }
 }
+
 *setTypeElementType(A_TYPE *,A_TYPE *);
-*makeType(T_KIND); setTypeSize(A_TYPE *,int); semantic_warning(int, int); semantic_error();
+*makeType(T_KIND); setTypeSize(A_TYPE *,int); 
+semantic_warning(int, int); 
+semantic_error();
 *makeNode(NODE_NAME, A_NODE *, A_NODE *,A_NODE *);
 
 int put_literal(A_LITERAL lit, int ll) {
-float ff;
-if (literal_no >=LIT_MAX)
-semantic_error(93, ll);
-else
-literal_no++; literal_table[literal_no]=lit;
-literal_table[literal_no].addr=literal_size; if (lit.type->kind==T_ENUM)
-literal_size+=4;
-else if (isStringType(lit.type))
-literal_size+=strlen(lit.value.s)+1; if (literal_size%4)
-literal_size=literal_size/4*4+4; return(literal_no);
+    float ff;
+    if (literal_no >=LIT_MAX)
+        semantic_error(93, ll);
+    else
+        literal_no++; 
+    literal_table[literal_no]=lit;
+    literal_table[literal_no].addr=literal_size; 
+    if (lit.type->kind==T_ENUM)
+        literal_size+=4;
+    else if (isStringType(lit.type))
+        literal_size+=strlen(lit.value.s)+1; 
+    if (literal_size%4)
+        literal_size=literal_size/4*4+4; 
+    return(literal_no);
 }
+
+// 해당 수식의 신택스 트리 아래 모든 심볼과 타입 테이블 분석, 필요시 변환(아마 
+// 배열을 포인터로, 그런거인듯)  
+// usual의 용어는 '일반적인(normal, as usual)'의 의미로 보인다.
 A_TYPE *sem_expression(A_NODE *node) {
-A_TYPE *result=NIL, *t,*t1, *t2; A_ID *id;
-A_LITERAL lit;
-int i;
-BOOLEAN lvalue=FALSE;; switch(node->name) {
-case N_EXP_IDENT : id=node->clink;
-switch (id->kind) { case ID_VAR:
-case ID_PARM: result=id->type;
-if (!isArrayType(result)) lvalue=TRUE;
-break; case ID_FUNC:
-result=id->type;
-break;
-case ID_ENUM_LITERAL:
-result=int_type; break;
-case
-case
-case
-case
-case
-} break;
-N_EXP_INT_CONST : result=int_type; break;
-N_EXP_FLOAT_CONST : lit.type=float_type; lit.value.f=atof(node->clink); node->clink=put_literal(lit,node->line); result = float_type;
-break; N_EXP_CHAR_CONST :
-result=char_type; break;
-N_EXP_STRING_LITERAL : lit.type=string_type; lit.value.s=node->clink; node->clink=put_literal(lit,node->line); result=string_type;
-break; N_EXP_ARRAY :
-t1=sem_expression(node->llink); t2=sem_expression(node->rlink);
-// usual binary conversion t=convertUsualBinaryConversion(node); t1=node->llink->type; t2=node->rlink->type;
-if (isPointerOrArrayType(t1)) result=t1->element_type;
-else
-semantic_error(32,node->line); if (!isIntegralType(t2))
-semantic_error(29,node->line); if (!isArrayType(result))
-lvalue=TRUE; break;
-N_EXP_STRUCT : t=sem_expression(node->llink); id=getStructFieldIdentifier(t,node->rlink);
-// index of literal table
-case
-default: semantic_error(38,node->line,id->name); break;
-// index of literal table
-case
-semantic_error(37,node->line); node->rlink=id;
-break; N_EXP_ARROW:
-t=sem_expression(node->llink); id=getPointerFieldIdentifier(t,node->rlink); if (id) {
-case
-semantic_error(37,node->line); node->rlink=id;
-break; N_EXP_FUNCTION_CALL :
-t=sem_expression(node->llink);
-// usual unary conversion node->llink=convertUsualUnaryConversion(node->llink); t=node->llink->type;
-if (isPointerType(t) && isFunctionType(t->element_type)) {
-sem_arg_expr_list(node->rlink,t->element_type->field); result=t->element_type->element_type;}
-else
-semantic_error(21,node->line); break;
-N_EXP_POST_INC : N_EXP_POST_DEC :
-result=sem_expression(node->clink);
-// usual binary conversion between the expression and 1 if (!isScalarType(result))
-semantic_error(27,node->line); // check if modifiable lvalue
-if (!isModifiableLvalue(node->clink)) semantic_error(60,node->line);
-break; N_EXP_CAST :
-case case
-case
-if (id) {
-result=id->type;
-else
-else
-if (node->llink->value && !isArrayType(result)) lvalue=TRUE; }
-result=id->type;
-if (!isArrayType(result))
-lvalue=TRUE; }
-identifier)
-case
-result=node->llink;
-i=sem_A_TYPE(result); t=sem_expression(node->rlink);
-// check allowable casting conversion
-if (!isAllowableCastingConversion(result,t))
-semantic_error(58,node->line); break;
-N_EXP_SIZE_TYPE :
-t=node->clink;
-i=sem_A_TYPE(t);
-// check if incomplete array, function, void
-if (isArrayType(t) && t->size==0 || isFunctionType(t) || isVoidType(t))
-semantic_error(39,node->line);
-else
-node->clink=i; result=int_type;
-break; N_EXP_SIZE_EXP :
-t=sem_expression(node->clink);
-// check if incomplete array, function (for non parameter
-case
-if ((node->clink->name!=N_EXP_IDENT || ((A_ID*)node->clink->clink)->kind!=ID_PARM) &&
-(isArrayType(t) && t->size==0 || isFunctionType(t))) semantic_error(39,node->line);
-else
-node->clink=t->size; result=int_type;
-break; N_EXP_PLUS : N_EXP_MINUS :
-t=sem_expression(node->clink); if (isArithmeticType(t)) {
-node->clink=convertUsualUnaryConversion(node->clink); result=node->clink->type;}
-else
-semantic_error(13,node->line); break;
-N_EXP_NOT : t=sem_expression(node->clink); if (isScalarType(t)) {
-case case
-case
-case
-case
-semantic_error(27,node->line); break;
-N_EXP_AMP :
-t=sem_expression(node->clink);
-if (node->clink->value==TRUE || isFunctionType(t)) {
-result=setTypeElementType(makeType(T_POINTER),t); result->size=4;}
-else
-semantic_error(60,node->line); break;
-N_EXP_STAR :
-t=sem_expression(node->clink); node->clink=convertUsualUnaryConversion(node->clink); if (isPointerType(t)) {
-case case
-semantic_error(31,node->line); break;
-N_EXP_PRE_INC : N_EXP_PRE_DEC :
-result=sem_expression(node->clink);
-// usual binary conversion between the expression and 1 if (!isScalarType(result))
-semantic_error(27,node->line); // check if modifiable lvalue
-if (!isModifiableLvalue(node->clink)) semantic_error(60,node->line);
-break; N_EXP_MUL : N_EXP_DIV :
-t1=sem_expression(node->llink); t2=sem_expression(node->rlink);
-if (isArithmeticType(t1) && isArithmeticType(t2)){
-result=convertUsualBinaryConversion(node); }
-case case
-else
-else
-node->clink=convertUsualUnaryConversion(node->clink); result=int_type;}
-result=t->element_type;
-// lvalue if points to an object
-if (isStructOrUnionType(result) || isScalarType(result))
-lvalue=TRUE;}
-case
-else
-semantic_error(28,node->line); break;
-N_EXP_MOD : t1=sem_expression(node->llink); t2=sem_expression(node->rlink);
-if (isIntegralType(t1) && isIntegralType(t2))
-result=convertUsualBinaryConversion(node);
-else
-semantic_error(29,node->line); result=int_type;
-break; N_EXP_ADD :
-t1=sem_expression(node->llink); t2=sem_expression(node->rlink);
-if (isArithmeticType(t1) && isArithmeticType(t2))
-result=convertUsualBinaryConversion(node); else if (isPointerType(t1) && isIntegralType(t2))
-result=t1;
-else if (isIntegralType(t1) && isPointerType(t2))
-result=t2; else
-semantic_error(24,node->line); break;
-N_EXP_SUB :
-t1=sem_expression(node->llink); t2=sem_expression(node->rlink);
-if (isArithmeticType(t1) && isArithmeticType(t2))
-result=convertUsualBinaryConversion(node); else if (isPointerType(t1) && isIntegralType(t2))
-result=t1;
-else if (isCompatiblePointerType(t1,t2))
-result=t1; else
-semantic_error(24,node->line); break;
-N_EXP_LSS : N_EXP_GTR : N_EXP_LEQ : N_EXP_GEQ :
+    A_TYPE *result=NIL, *t,*t1, *t2; 
+    A_ID *id;
+    A_LITERAL lit;
+    int i;
+    BOOLEAN lvalue=FALSE;
+    switch(node->name) {
+        case N_EXP_IDENT : 
+            id=node->clink;
+            switch (id->kind) { 
+                case ID_VAR:
+                case ID_PARM: 
+                    result=id->type;
+                    if (!isArrayType(result))
+                        lvalue=TRUE;
+                        break; 
+                case ID_FUNC:
+                    result=id->type;
+                    break;
+                case ID_ENUM_LITERAL:
+                    result=int_type; 
+                    break;
+        case N_EXP_INT_CONST : 
+            result=int_type; 
+            break;
+        case N_EXP_FLOAT_CONST : 
+            lit.type=float_type; 
+            lit.value.f = atof(node->clink); 
+            node->clink=put_literal(lit,node->line); 
+            result = float_type;
+            break; 
+        case N_EXP_CHAR_CONST :
+            result=char_type; 
+            break;
+        case N_EXP_STRING_LITERAL : 
+            lit.type=string_type; 
+            lit.value.s=node->clink; 
+            node->clink=put_literal(lit,node->line); 
+            result=string_type;
+            break;
+        case N_EXP_ARRAY :
+            t1=sem_expression(node->llink); 
+            t2=sem_expression(node->rlink);
+            // usual binary conversion 
+            t=convertUsualBinaryConversion(node); 
+            t1=node->llink->type; 
+            t2=node->rlink->type;
+            if (isPointerOrArrayType(t1)) 
+                result=t1->element_type;
+            else
+                semantic_error(32,node->line); 
+            if (!isIntegralType(t2))
+                semantic_error(29,node->line); 
+            if (!isArrayType(result))
+                lvalue=TRUE; 
+            break;
+        case N_EXP_STRUCT : 
+            t=sem_expression(node->llink); 
+            id=getStructFieldIdentifier(t,node->rlink);
+            if (id) {
+                result=id->type;
+                if (node->llink->value && !isArrayType(result)) 
+                    lvalue=TRUE; 
+            }
+            else
+                semantic_error(37,node->line); 
+            node->rlink=id;
+            break;
+        case N_EXP_ARROW:
+            t=sem_expression(node->llink); 
+            id=getPointerFieldIdentifier(t,node->rlink); 
+            if (id) {
+                result=id->type;
+                if (!isArrayType(result)) 
+                    lvalue=TRUE; 
+            }
+            else
+                semantic_error(37,node->line); 
+            node->rlink=id;
+            break; 
+        case N_EXP_FUNCTION_CALL :
+            t=sem_expression(node->llink);
+            // usual unary conversion 
+            node->llink=convertUsualUnaryConversion(node->llink); 
+            t=node->llink->type;
+            if (isPointerType(t) && isFunctionType(t->element_type)) {
+                sem_arg_expr_list(node->rlink,t->element_type->field); 
+                result=t->element_type->element_type;
+            }
+            else
+                semantic_error(21,node->line); 
+                break;
+        case N_EXP_POST_INC : 
+        case N_EXP_POST_DEC :
+            result=sem_expression(node->clink);
+            // usual binary conversion between the expression and 1 if (!isScalarType(result))
+            if(!isScalarType(result))
+                semantic_error(27,node->line);
+            // check if modifiable lvalue
+            if (!isModifiableLvalue(node->clink)) 
+                semantic_error(60,node->line);
+                break; 
+        case N_EXP_CAST :
+            result=node->llink;
+            i=sem_A_TYPE(result); 
+            t=sem_expression(node->rlink);
+            // check allowable casting conversion
+            if (!isAllowableCastingConversion(result,t))
+                semantic_error(58,node->line); 
+            break;
+        case N_EXP_SIZE_TYPE :
+            t=node->clink;
+            i=sem_A_TYPE(t);
+            // check if incomplete array, function, void
+            if (isArrayType(t) && t->size==0 || isFunctionType(t) || isVoidType(t))
+                semantic_error(39,node->line);
+            else
+                node->clink=i; 
+            result=int_type;
+            break; 
+        case N_EXP_SIZE_EXP :
+            t=sem_expression(node->clink);
+            // check if incomplete array, function (for non parameter
+            if ((node->clink->name!=N_EXP_IDENT || 
+                ((A_ID*)node->clink->clink)->kind!=ID_PARM) &&
+            (isArrayType(t) && t->size==0 || isFunctionType(t)))
+            semantic_error(39,node->line);
+            else
+                node->clink=t->size; 
+            result=int_type;
+            break; 
+        case N_EXP_PLUS : 
+        case N_EXP_MINUS :
+            t=sem_expression(node->clink); 
+            if (isArithmeticType(t)) {
+                node->clink=convertUsualUnaryConversion(node->clink); 
+                result=node->clink->type;}
+            else
+                semantic_error(13,node->line); 
+            break;
+        case N_EXP_NOT : 
+            t=sem_expression(node->clink); 
+            if (isScalarType(t)) {
+                node->clink=convertUsualUnaryConversion(node->clink); 
+                result=node->clink->type;}
+            else
+                semantic_error(27,node->line); 
+            break;
+        case N_EXP_AMP :
+            t=sem_expression(node->clink);
+            if (node->clink->value==TRUE || isFunctionType(t)) {
+                result=setTypeElementType(makeType(T_POINTER),t); 
+                result->size=4;
+            }
+            else
+                semantic_error(60,node->line); 
+            break;
+        case N_EXP_STAR :
+            t=sem_expression(node->clink); 
+            node->clink=convertUsualUnaryConversion(node->clink); 
+            if (isPointerType(t)) {
+                result=t->element_type;
+                // lvalue if points to an object
+                if (isStructOrUnionType(result) || isScalarType(result))
+                value=TRUE;}
+            else
+                semantic_error(31,node->line); 
+            break;
+        case N_EXP_PRE_INC : 
+        case N_EXP_PRE_DEC :
+            result=sem_expression(node->clink);
+            // usual binary conversion between the expression and 1 
+            if (!isScalarType(result))
+                semantic_error(27,node->line); 
+            // check if modifiable lvalue
+            if (!isModifiableLvalue(node->clink)) 
+                semantic_error(60,node->line);
+                break; 
+        case N_EXP_MUL : 
+        case N_EXP_DIV :
+            t1=sem_expression(node->llink); 
+            t2=sem_expression(node->rlink);
+            if (isArithmeticType(t1) && isArithmeticType(t2)){
+                result=convertUsualBinaryConversion(node); 
+            }
+            else
+                semantic_error(28,node->line); 
+            break;
+        case N_EXP_MOD : 
+            t1=sem_expression(node->llink); 
+            t2=sem_expression(node->rlink);
+            if (isIntegralType(t1) && isIntegralType(t2))
+                result=convertUsualBinaryConversion(node);
+            else
+                semantic_error(29,node->line); 
+            result=int_type;
+            break; 
+        case N_EXP_ADD :
+            t1=sem_expression(node->llink); 
+            t2=sem_expression(node->rlink);
+            if (isArithmeticType(t1) && isArithmeticType(t2))
+                result=convertUsualBinaryConversion(node); 
+            else if (isPointerType(t1) && isIntegralType(t2))
+                result=t1;
+            else if (isIntegralType(t1) && isPointerType(t2))
+                result=t2; 
+            else
+                semantic_error(24,node->line); 
+            break;
+        case N_EXP_SUB :
+            result = getTypeAndValueOfExpression(node->llink);
+            r = getTypeAndValueOfExpression(node->rlink);
+			if (result.type==int_type && r.type==int_type){
+				result.type=int_type;
+				result.value.i=result.value.i+r.value.i;}
+			else if (result.type==int_type && r.type==float_type){
+				result.type=float_type;
+				result.value.f=result.value.i+r.value.f;}
+			else if (result.type==float_type && r.type==int_type){
+				result.type=float_type;
+				result.value.f=result.value.f+r.value.i;}
+			else if (result.type==float_type && r.type==float_type){
+				result.type=float_type; result.value.f=result.value.f+r.value.f;}
+			else
+				semantic_error(18,node->line); 
+			break;
+	    case N_EXP_LSS : 
+	    case N_EXP_GTR : 
+	    case N_EXP_LEQ : 
+	    case N_EXP_GEQ :
+		case N_EXP_NEQ : 
+		case N_EXP_EQL : 
+		case N_EXP_AND : 
+		case N_EXP_OR : 
+		case N_EXP_ASSIGN :
+			semantic_error(18,node->line);
+			break; 
+		default :
+			semantic_error(90,node->line);
+			break; 
+		
+	}
+	return (result);
+}
+
+
 t1=sem_expression(node->llink);
 case
 case
@@ -581,7 +686,9 @@ else if (isFunctionType(t)){ t=setTypeElementType(makeType(T_POINTER),t); t->siz
 return (node);
 }
 A_TYPE *convertUsualBinaryConversion(A_NODE *node) {
-A_TYPE *t1, *t2, *result=NIL; t1=node->llink->type; t2=node->rlink->type;
+    A_TYPE *t1, *t2, *result=NIL; 
+    t1=node->llink->type; 
+    t2=node->rlink->type;
 if(isFloatType(t1) && !isFloatType(t2)) {
 semantic_warning(14,node->line); node->rlink=makeNode(N_EXP_CAST,t1,NIL,node->rlink); node->rlink->type=t1;
 result=t1;}
