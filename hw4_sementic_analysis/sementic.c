@@ -393,7 +393,10 @@ void sem_arg_expr_list(A_NODE *node, A_ID *id)
 }
 
 BOOLEAN isModifiableLvalue(A_NODE *node) {
-if (node->value==FALSE || isFunctionType(node->type))
+	if (node->value==FALSE || isFunctionType(node->type))
+		return FALSE;
+	else
+		return True;
 isVoidType(node->type) ||
 }
 // check statement and return local variable size
