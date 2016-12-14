@@ -524,15 +524,25 @@ void sem_for_expression(A_NODE *node) {
 // check statement-list and return local variable size
 int sem_statement_list(A_NODE *node, int addr, A_TYPE *ret, BOOLEAN sw, BOOLEAN brk, BOOLEAN cnt)
 {
-int size,i; switch(node->name) {
-case N_STMT_LIST:
-size=sem_statement(node->llink, addr,ret,sw,brk,cnt); i=sem_statement_list(node->rlink, addr,ret,sw,brk,cnt); if(size<i)
-size=i; break;
-case N_STMT_LIST_NIL: size=0;
-break; default :
-semantic_error(90,node->line); break;
-} node->value=size; return(size);
+	int size,i; 
+	switch(node->name) {
+		case N_STMT_LIST:
+			size=sem_statement(node->llink, addr,ret,sw,brk,cnt); 
+			i=sem_statement_list(node->rlink, addr,ret,sw,brk,cnt); 
+			if(size<i)
+				size=i; 
+			break;
+		case N_STMT_LIST_NIL: 
+			size=0;
+			break; 
+		default :
+			semantic_error(90,node->line); 
+			break;
+	} 
+	node->value=size; 
+	return(size);
 }
+
 // check type and return its size (size of incomplete type is 0) int sem_A_TYPE(A_TYPE *t)
 {
 A_ID *id; A_TYPE *tt; A_LITERAL lit; int result=0,i; if (t->check)
