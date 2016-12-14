@@ -397,74 +397,108 @@ BOOLEAN isModifiableLvalue(A_NODE *node) {
 		return FALSE;
 	else
 		return True;
-isVoidType(node->type) ||
-}
+
 // check statement and return local variable size
 int sem_statement(A_NODE *node, int addr, A_TYPE *ret, BOOLEAN sw, BOOLEAN brk, BOOLEAN cnt)
 {
-int local_size=0,i; A_LITERAL lit; A_TYPE *t; switch(node->name) {
-case N_STMT_LABEL_CASE : if (sw==FALSE)
-semantic_error(71,node->line); lit=getTypeAndValueOfExpression(node->llink); if (isIntegralType(lit.type))
-node->llink=lit.value.i;
-else local_size=sem_statement(node->rlink,addr,ret,sw,brk,cnt);
-semantic_error(51,node->line);
-case
-case
-break; N_STMT_LABEL_DEFAULT :
-if (sw==FALSE) semantic_error(72,node->line);
-local_size=sem_statement(node->clink,addr,ret,sw,brk,cnt); break;
-N_STMT_COMPOUND: if(node->llink)
-local_size=sem_declaration_list(node->llink,addr);
-local_size+=sem_statement_list(node->rlink,local_size+addr,ret,sw,brk,cnt); break;
-case case
-case
-case
-N_STMT_EMPTY: break;
-N_STMT_EXPRESSION: t=sem_expression(node->clink); break;
-N_STMT_IF: t=sem_expression(node->llink); if (isScalarType(t))
-node->llink=convertScalarToInteger(node->llink);
-else
-semantic_error(50,node->line); local_size=sem_statement(node->rlink,addr,ret,FALSE,brk,cnt); break;
-N_STMT_IF_ELSE: t=sem_expression(node->llink); if (isScalarType(t))
-node->llink=convertScalarToInteger(node->llink);
-else
-semantic_error(50,node->line); local_size=sem_statement(node->clink,addr,ret,FALSE,brk,cnt); i=sem_statement(node->rlink,addr,ret,FALSE,brk,cnt);
-if (local_size<i)
-local_size=i; break;
-N_STMT_SWITCH: t=sem_expression(node->llink); if (!isIntegralType(t))
-semantic_error(50,node->line); local_size=sem_statement(node->rlink,addr,ret,TRUE,TRUE,cnt);
-case
-case
-case
-case
-case
-case
-case
-break; N_STMT_WHILE:
-t=sem_expression(node->llink); if (isScalarType(t))
-node->llink=convertScalarToInteger(node->llink);
-else
-semantic_error(50,node->line); local_size=sem_statement(node->rlink,addr,ret,FALSE,TRUE,TRUE); break;
-N_STMT_DO: local_size=sem_statement(node->llink,addr,ret,FALSE,TRUE,TRUE); t=sem_expression(node->rlink);
-if (isScalarType(t))
-node->rlink=convertScalarToInteger(node->rlink);
-else
-semantic_error(50,node->line); break;
-N_STMT_FOR:
-sem_for_expression(node->llink); local_size=sem_statement(node->rlink,addr,ret,FALSE,TRUE,TRUE); break;
-N_STMT_CONTINUE: if (cnt==FALSE)
-semantic_error(74,node->line); break;
-N_STMT_BREAK: if (brk==FALSE)
-semantic_error(73,node->line); break;
-N_STMT_RETURN: if(node->clink){
-t=sem_expression(node->clink);
-if (isAllowableCastingConversion(ret,t))
-node->clink=convertCastingConversion(node->clink,ret); else
-semantic_error(57,node->line);}
-break; default:
-semantic_error(90,node->line); break;
-} node->value=local_size; return(local_size);
+	int local_size=0,i; 
+	A_LITERAL lit; 
+	A_TYPE *t; 
+	switch(node->name) {
+	case N_STMT_LABEL_CASE : 
+		if (sw==FALSE) // case statement is not in 'switch'
+			semantic_error(71,node->line); 
+		lit=getTypeAndValueOfExpression(node->llink); 
+		if (isIntegralType(lit.type))
+			node->llink=lit.value.i;
+		else 
+			semantic_error(51,node->line);
+		local_size=sem_statement(node->rlink,addr,ret,sw,brk,cnt);
+		break;
+	case N_STMT_LABEL_DEFAULT :
+		if (sw==FALSE) 
+			semantic_error(72,node->line);
+		local_size=sem_statement(node->clink,addr,ret,sw,brk,cnt); 
+		break;
+	case N_STMT_COMPOUND: 
+		if(node->llink)
+			local_size=sem_declaration_list(node->llink,addr);
+		local_size+=sem_statement_list(node->rlink,local_size+addr,ret,sw,brk,cnt); 
+		break;
+	case N_STMT_EMPTY: 
+		break;
+	case N_STMT_EXPRESSION: 
+		t=sem_expression(node->clink); 
+		break;
+	case N_STMT_IF: 
+		t=sem_expression(node->llink); 
+		if (isScalarType(t))
+			node->llink=convertScalarToInteger(node->llink);
+		else
+			semantic_error(50,node->line); 
+		local_size=sem_statement(node->rlink,addr,ret,FALSE,brk,cnt); 
+		break;
+	case N_STMT_IF_ELSE: 
+		t=sem_expression(node->llink); 
+		if (isScalarType(t))
+			node->llink=convertScalarToInteger(node->llink);
+		else
+			semantic_error(50,node->line); 
+		local_size=sem_statement(node->clink,addr,ret,FALSE,brk,cnt); 
+		i=sem_statement(node->rlink,addr,ret,FALSE,brk,cnt);
+		if (local_size<i)
+			local_size=i; 
+		break;
+	case N_STMT_SWITCH: 
+		t=sem_expression(node->llink); 
+		if (!isIntegralType(t))
+			semantic_error(50,node->line);
+		local_size=sem_statement(node->rlink,addr,ret,TRUE,TRUE,cnt);
+	case N_STMT_WHILE:
+		t=sem_expression(node->llink); 
+		if (isScalarType(t))
+			node->llink=convertScalarToInteger(node->llink);
+		else
+			semantic_error(50,node->line); 
+		local_size=sem_statement(node->rlink,addr,ret,FALSE,TRUE,TRUE); 
+		break;
+	case N_STMT_DO: 
+		local_size=sem_statement(node->llink,addr,ret,FALSE,TRUE,TRUE); 
+		t=sem_expression(node->rlink);
+		if (isScalarType(t))
+			node->rlink=convertScalarToInteger(node->rlink);
+		else
+			semantic_error(50,node->line); 
+		break;
+	case N_STMT_FOR:
+		sem_for_expression(node->llink); 
+		local_size=sem_statement(node->rlink,addr,ret,FALSE,TRUE,TRUE); 
+		break;
+	case N_STMT_CONTINUE: 
+		if (cnt==FALSE)
+			semantic_error(74,node->line); 
+		break;
+	case N_STMT_BREAK: 
+		if (brk==FALSE)
+			semantic_error(73,node->line); 
+		break;
+	case N_STMT_RETURN: 
+		if(node->clink){
+			t=sem_expression(node->clink);
+			if (isAllowableCastingConversion(ret,t))
+				node->clink=convertCastingConversion(node->clink,ret); 
+			else
+				semantic_error(57,node->line);
+		}
+		break; 
+	default:
+		semantic_error(90,node->line); 
+		break;
+	} 
+	node->value=local_size; 
+	return(local_size);
 }
+
 void sem_for_expression(A_NODE *node) {
 A_TYPE *t;
 switch (node->name) {
