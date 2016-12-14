@@ -114,7 +114,7 @@ A_TYPE *sem_expression(A_NODE *node) {
     int i;
     BOOLEAN lvalue=FALSE;
     switch(node->name) {
-        case N_EXP_IDENT : 
+		case N_EXP_IDENT : 
             id=node->clink;
             switch (id->kind) { 
                 case ID_VAR:
@@ -333,10 +333,10 @@ A_TYPE *sem_expression(A_NODE *node) {
 			else
 				semantic_error(18,node->line); 
 			break;
-	    case N_EXP_LSS : 
-	    case N_EXP_GTR : 
-	    case N_EXP_LEQ : 
-	    case N_EXP_GEQ :
+		case N_EXP_LSS : 
+		case N_EXP_GTR : 
+		case N_EXP_LEQ : 
+		case N_EXP_GEQ :
 		case N_EXP_NEQ : 
 		case N_EXP_EQL : 
 		case N_EXP_AND : 
@@ -352,71 +352,46 @@ A_TYPE *sem_expression(A_NODE *node) {
 	return (result);
 }
 
-
-t1=sem_expression(node->llink);
-case
-case
-case case case case
-case case
-t2=sem_expression(node->rlink);
-if (isArithmeticType(t1) && isArithmeticType(t2))
-t=convertUsualBinaryConversion(node); else if (!isCompatiblePointerType(t1,t2))
-semantic_error(40,node->line); result=int_type;
-break; N_EXP_NEQ : N_EXP_EQL :
-t1=sem_expression(node->llink); t2=sem_expression(node->rlink);
-if (isArithmeticType(t1) && isArithmeticType(t2))
-t=convertUsualBinaryConversion(node); else if (!isCompatiblePointerType(t1,t2) &&
-(!isPointerType(t1) || !isConstantZeroExp(node->rlink)) && (!isPointerType(t2) || !isConstantZeroExp(node->llink))) semantic_error(40,node->line);
-result=int_type; break;
-N_EXP_AND : N_EXP_OR :
-t=sem_expression(node->llink); if (isScalarType(t))
-node->llink=convertUsualUnaryConversion(node->llink);
-else
-semantic_error(27,node->line); t=sem_expression(node->rlink);
-if (isScalarType(t)) node->rlink=convertUsualUnaryConversion(node->rlink);
-else
-semantic_error(27,node->line); result=int_type;
-break; N_EXP_ASSIGN :
-result=sem_expression(node->llink); // check if modifiable lvalue
-if (!isModifiableLvalue(node->llink))
-semantic_error(60,node->line); t=sem_expression(node->rlink);
-node->rlink=convertUsualUnaryConversion(node->rlink); t=node->rlink->type;
-case case
-case
-if (isAllowableAssignmentConversion(result,t,node->rlink)){ if (isArithmeticType(result) && isArithmeticType(t))
-node->rlink=convertUsualAssignmentConversion(result,node->rlink);} else
-semantic_error(58,node->line); break;
-default : semantic_error(90,node->line); break;
-}
-node->type=result; node->value=lvalue; return (result);
-}
-// check argument-expression-list in function call expression void sem_arg_expr_list(A_NODE *node, A_ID *id)
+// check argument-expression-list in function call expression 
+void sem_arg_expr_list(A_NODE *node, A_ID *id)
 {
-A_TYPE *t;
-A_ID *a;
-int arg_size=0; switch(node->name) {
-case N_ARG_LIST : if (id==0)
-semantic_error(34,node->line); else {
-if (id->type) { t=sem_expression(node->llink);
-node->llink=convertUsualUnaryConversion(node->llink); if
-(isAllowableCastingConversion(id->type,node->llink->type))
-node->llink=convertCastingConversion(node->llink,id->type); else
-else {
-semantic_error(59,node->line); sem_arg_expr_list(node->rlink,id->link);} // DOTDOT parameter : no conversion t=sem_expression(node->llink); sem_arg_expr_list(node->rlink,id); }
-if (isArrayType(node->llink->type))
-else
-return (FALSE);
-return (TRUE);
-else
-arg_size=4+node->rlink->value;
-arg_size=node->llink->type->size+node->rlink->value;} break;
-case N_ARG_LIST_NIL :
-if (id && id->type) // check if '...' argument
-semantic_error(35,node->line); break;
-default : semantic_error(90,node->line); break;
+	A_TYPE *t;
+	A_ID *a;
+	int arg_size=0; 
+	switch(node->name) {
+		case N_ARG_LIST : 
+			if (id==0)
+				semantic_error(34,node->line); 
+			else {
+				if (id->type) {
+					t=sem_expression(node->llink);
+					node->llink=convertUsualUnaryConversion(node->llink); 
+					if(isAllowableCastingConversion(id->type,node->llink->type))
+						node->llink=convertCastingConversion(node->llink,id->type); 
+					else
+						semantic_error(59,node->line);
+					sem_arg_expr_list(node->rlink,id->link);
+				}
+				else {	// DOTDOT parameter : no conversion 
+					t=sem_expression(node->llink); 
+					sem_arg_expr_list(node->rlink,id);
+				}
+				arg_size=node->llink->type->size+node->rlink->value;
+			}
+			break;
+		case N_ARG_LIST_NIL :
+			if (id && id->type) // check if '...' argument
+				semantic_error(35,node->line); 
+			break;
+		default : 
+			semantic_error(90,node->line); 
+			break;
+	}
+	if (arg_size%4) 
+		arg_size=arg_size/4*4+4; 
+	node->value=arg_size;
 }
-if (arg_size%4) arg_size=arg_size/4*4+4; node->value=arg_size;
-}
+
 BOOLEAN isModifiableLvalue(A_NODE *node) {
 if (node->value==FALSE || isFunctionType(node->type))
 isVoidType(node->type) ||
