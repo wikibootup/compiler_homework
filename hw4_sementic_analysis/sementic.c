@@ -500,17 +500,27 @@ int sem_statement(A_NODE *node, int addr, A_TYPE *ret, BOOLEAN sw, BOOLEAN brk, 
 }
 
 void sem_for_expression(A_NODE *node) {
-A_TYPE *t;
-switch (node->name) {
-} }
-case N_FOR_EXP : if(node->llink)
-t=sem_expression(node->llink); if(node->clink) {
-t=sem_expression(node->clink); if (isScalarType(t))
-else
-} if(node->rlink)
-node->clink=convertScalarToInteger(node->clink); semantic_error(49,node->line);
-t=sem_expression(node->rlink); break;
-default : semantic_error(90,node->line); break;
+	A_TYPE *t;
+	switch (node->name) {
+		case N_FOR_EXP : 
+			if(node->llink)
+				t=sem_expression(node->llink); 
+			if(node->clink) {
+				t=sem_expression(node->clink); 
+				if (isScalarType(t))
+					node->clink=convertScalarToInteger(node->clink); 
+				else
+					semantic_error(49,node->line);
+			} 
+			if(node->rlink)
+				t=sem_expression(node->rlink); 
+			break;
+		default : 
+			semantic_error(90,node->line); 
+			break;
+	}
+}
+
 // check statement-list and return local variable size
 int sem_statement_list(A_NODE *node, int addr, A_TYPE *ret, BOOLEAN sw, BOOLEAN brk, BOOLEAN cnt)
 {
