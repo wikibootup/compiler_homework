@@ -543,59 +543,87 @@ int sem_statement_list(A_NODE *node, int addr, A_TYPE *ret, BOOLEAN sw, BOOLEAN 
 	return(size);
 }
 
-// check type and return its size (size of incomplete type is 0) int sem_A_TYPE(A_TYPE *t)
+// check type and return its size (size of incomplete type is 0) 
+int sem_A_TYPE(A_TYPE *t)
 {
-A_ID *id; A_TYPE *tt; A_LITERAL lit; int result=0,i; if (t->check)
-return(t->size); t->check=1;
-switch (t->kind) { case T_NULL:
-semantic_error(80,t->line);
-break; case T_ENUM:
-i=0; id=t->field; while (id) {
-// enumerators
-if (id->init){ lit=getTypeAndValueOfExpression(id->init); if (!isIntType(lit.type))
-semantic_error(81,id->line); i=lit.value.i;}
-id->init=i++;
-id=id->link; } result=4;
-break; case T_ARRAY:
-if (t->expr){ lit=getTypeAndValueOfExpression(t->expr); if (!isIntType(lit.type) || lit.value.i<=0) {
-semantic_error(82,t->line);
-type
-and size
-declaration
-// parameter type
-t->expr=0;} else
-t->expr=lit.value.i; } i=sem_A_TYPE(t->element_type)*(int)t->expr;
-if (isVoidType(t->element_type) || isFunctionType(t->element_type)) semantic_error(83,t->line);
-else
-result=i;
-break;
-case T_STRUCT:
-id=t->field; while (id) {
-result+=sem_declaration(id,result);
-id = id->link; } break;
-case T_UNION: id=t->field; while (id) {
-i=sem_declaration(id,0); if (i>result)
-result=i; id = id->link; }
-break; case T_FUNC:
-tt=t->element_type;
-i=sem_A_TYPE(tt);
-if (isArrayType(tt) || isFunctionType(tt)) //
-semantic_error(85,t->line); i=sem_declaration_list(t->field,12)+12;
-if (t->expr) {
-check function
-return
-i=i+sem_statement(t->expr,i,t->element_type,FALSE,FALSE,FALSE);}
-t->local_var_size=i;
-break;
-case T_POINTER:
-i=sem_A_TYPE(t->element_type); result=4;
-break;
-// skip
-prototype
-case T_VOID: break;
-default: semantic_error(90,t->line); break;
-} t->size=result; return(result);
+	A_ID *id; 
+	A_TYPE *tt; 
+	A_LITERAL lit; 
+	int result=0,i; 
+	if (t->check)
+		return(t->size); 
+	t->check=1;
+	switch (t->kind) { 
+		case T_NULL:
+			semantic_error(80,t->line);
+			break; 
+		case T_ENUM:
+			i=0; 
+			id=t->field; 
+		while (id) { // enumerators
+			if (id->init){ 
+				lit=getTypeAndValueOfExpression(id->init); 
+				if (!isIntType(lit.type))
+					semantic_error(81,id->line); 
+					i=lit.value.i;
+			}
+			id->init=i++;
+			id=id->link; 
+		} 
+		result=4;
+		break; 
+	case T_ARRAY:
+		if (t->expr){ 
+			lit=getTypeAndValueOfExpression(t->expr); 
+			if (!isIntType(lit.type) || lit.value.i<=0) {
+				semantic_error(82,t->line);
+				t->expr=0;
+			} else
+				t->expr=lit.value.i; 
+		} 
+		i=sem_A_TYPE(t->element_type)*(int)t->expr;
+		if (isVoidType(t->element_type) || isFunctionType(t->element_type)) 
+			semantic_error(83,t->line);
+		else
+			result=i;
+		break;
+	case T_STRUCT:
+		id=t->field; 
+		while (id) {
+			result+=sem_declaration(id,result);
+			id = id->link; 
+		} 
+		break;
+	case T_UNION: 
+		id=t->field; 
+		while (id) {
+			i=sem_declaration(id,0); 
+			if (i>result)
+				result=i; 
+			id = id->link; 
+		}
+		break; 
+	case T_FUNC:
+	tt=t->element_type;
+	i=sem_A_TYPE(tt);
+	if (isArrayType(tt) || isFunctionType(tt)) //
+	semantic_error(85,t->line); i=sem_declaration_list(t->field,12)+12;
+	if (t->expr) {
+	check function
+	return
+	i=i+sem_statement(t->expr,i,t->element_type,FALSE,FALSE,FALSE);}
+	t->local_var_size=i;
+	break;
+	case T_POINTER:
+	i=sem_A_TYPE(t->element_type); result=4;
+	break;
+	// skip
+	prototype
+	case T_VOID: break;
+	default: semantic_error(90,t->line); break;
+	} t->size=result; return(result);
 }
+
 // set variable address in declaration-list, and return its total variable size int sem_declaration_list(A_ID *id, int addr)
 {
 int i=addr; while (id) {
