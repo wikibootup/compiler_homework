@@ -604,24 +604,30 @@ int sem_A_TYPE(A_TYPE *t)
 		}
 		break; 
 	case T_FUNC:
-	tt=t->element_type;
-	i=sem_A_TYPE(tt);
-	if (isArrayType(tt) || isFunctionType(tt)) //
-	semantic_error(85,t->line); i=sem_declaration_list(t->field,12)+12;
-	if (t->expr) {
-	check function
-	return
-	i=i+sem_statement(t->expr,i,t->element_type,FALSE,FALSE,FALSE);}
-	t->local_var_size=i;
-	break;
+	    tt=t->element_type;
+    	i=sem_A_TYPE(tt);
+	    if (isArrayType(tt) || isFunctionType(tt)) // check return type
+        	semantic_error(85,t->line); 
+        i=sem_declaration_list(t->field,12)+12; // parameter type & size
+    	if (t->expr) {
+	        i=i+sem_statement(t->expr,i,t->element_type,FALSE,FALSE,FALSE);
+        	t->local_var_size=i;
+        	break;
+        }
+    	t->local_var_size=i;
+	    break;
 	case T_POINTER:
-	i=sem_A_TYPE(t->element_type); result=4;
-	break;
-	// skip
-	prototype
-	case T_VOID: break;
-	default: semantic_error(90,t->line); break;
-	} t->size=result; return(result);
+    	i=sem_A_TYPE(t->element_type); 
+        result=4;
+    	break;
+	case T_VOID: 
+        break;
+	default: 
+        semantic_error(90,t->line); 
+        break;
+	} 
+    t->size=result; 
+    return(result);
 }
 
 // set variable address in declaration-list, and return its total variable size int sem_declaration_list(A_ID *id, int addr)
