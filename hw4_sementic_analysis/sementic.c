@@ -865,21 +865,25 @@ BOOLEAN isAllowableAssignmentConversion(A_TYPE *t1, A_TYPE *t2, A_NODE *node) //
 }
 BOOLEAN isAllowableCastingConversion(A_TYPE *t1, A_TYPE *t2) t2
 {
-// t1 <---
-if (isAnyIntegerType(t1) && (isAnyIntegerType(t2) || isFloatType(t2) || isPointerType(t2)))
-return (TRUE);
-else if (isFloatType(t1) && isArithmeticType(t2))
-return (TRUE);
-else if (isPointerType(t1) && (isAnyIntegerType(t2) || isPointerType(t2)))
-return (TRUE); else if (isVoidType(t1))
-else
-return (TRUE);
-return (FALSE);
+    // t1 <---
+    if (isAnyIntegerType(t1) && (isAnyIntegerType(t2) || 
+                isFloatType(t2) || 
+                isPointerType(t2)))
+        return (TRUE);
+    else if (isFloatType(t1) && isArithmeticType(t2))
+        return (TRUE);
+    else if (isPointerType(t1) && (isAnyIntegerType(t2) || isPointerType(t2)))
+        return (TRUE); 
+    else if (isVoidType(t1))
+        return (TRUE);
+    else
+        return (FALSE);
 }
 BOOLEAN isFloatType(A_TYPE *t) {
-if (t ==float_type) return(TRUE);
-else
-return(FALSE);
+    if (t ==float_type) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isArithmeticType(A_TYPE *t) {
 if (t && t->kind==T_ENUM) return(TRUE);
