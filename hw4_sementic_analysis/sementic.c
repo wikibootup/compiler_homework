@@ -713,14 +713,16 @@ int sem_declaration(A_ID *id,int addr)
     return (size);
 }
 A_ID *getStructFieldIdentifier(A_TYPE *t, char *s) {
-A_ID *id=NIL;
-if (isStructOrUnionType(t)) {
-id=t->field; while (id) {
-return(id);
-return(id);
-if (strcmp(id->name,s)==0) break;
-id=id->link;} }
-}
+    A_ID *id=NIL;
+    if (isStructOrUnionType(t)) {
+        id=t->field; 
+        while (id) {
+            if (strcmp(id->name,s)==0) 
+                break;
+            id=id->link;
+        } 
+        return(id);
+    }
 A_ID *getPointerFieldIdentifier(A_TYPE *t, char *s) {
 A_ID *id=NIL;
 if (t && t->kind==T_POINTER) {
