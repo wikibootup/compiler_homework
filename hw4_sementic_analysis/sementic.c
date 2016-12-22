@@ -1154,90 +1154,9 @@ A_LITERAL getTypeAndValueOfExpression(A_NODE *node) {
     }// close switch statement
     return (result);
 }
+
+// simplified error procedure.
 void semantic_error(int i, int ll, char *s) {
-semantic_err++;
-printf("*** semantic error at line %d: ",ll); switch (i) {
-// errors in expression
-case 13:printf("arithmetic type expression required in unary
-operation\n");
-break;
-case case case
-18:printf("illegal constant expression \n"); break;
-19:printf("illegal identifier %s in constant expression\n",s); break;
-21:printf("illegal type in function call expression\n");
-break;
-case 24:printf("incompatible type in additive expression\n");
-break;
-case 27:printf("scalar type expression required in unary or logial-or
-operation\n");
-break;
-case 28:printf("arithmetic type expression required in binary
-operation\n");
-break;
-case 29:printf("integral type expression required in array subscript or binary operation\n");
-case case case case
-break;
-31:printf("pointer type expression required in pointer operation\n");
-break;
-32:printf("array type required in array expression\n");
-break;
-34:printf("too many arguments in function call\n");
-break;
-35:printf("too few arguments in function call\n");
-break;
-case 37:printf("illegal struct field identifier in struct reference
-expression\n");
-break;
-case case case
-38:printf("illegal kind of identifier %s in expression\n"); break;
-39:printf("illegal type size in sizeof operation\n"); break;
-40:printf("illegal expression type in relational operation"); break;
-//case 41:printf("incompatible type in literal\n"); break;
-// erros in statement
-case 49:printf("scalar type expression required in middle of
-for-expression\n"); break;
-case 50:printf("integral type expression required in selective or iterative statement\n");
-break;
-case 51:printf("illegal expression type in case label\n");
-break;
-case 57:printf("not permitted type conversion in return expression\n");
-break;
-case 58:printf("not permitted type casting in assignment or type casting
-expression\n");
-break;
-case case case case case case
-59:printf("not permitted type conversion in argument\n"); break;
-60:printf("expression is not an lvalue \n"); break;
-71:printf("case label not within a switch statement \n"); break;
-72:printf("default label not within a switch statement \n"); break;
-73:printf("break statement not within loop or switch statement \n"); break;
-74:printf("continue statement not within a loop \n"); break;
-// errors in type & declarator
-case case case case case case case case
-80:printf("undefined type\n"); break;
-81:printf("integer type expression required in enumerator\n"); break;
-82:printf("illegal array size or type\n"); break;
-83:printf("illegal element type of array declarator\n"); break;
-84:printf("illegal type in struct or union field\n"); break;
-85:printf("invalid function return type\n"); break;
-86:printf("illegal array size or empty array \n"); break;
-89:printf("unknown identifier kind: %s\n",s); break;
-// misc errors
-case 90:printf("fatal compiler error in parse result\n");
-break;
-case 93:printf("too many literals in source program \n");
-break; default:printf("unknown \n");
-break; }
+    semantic_err++;
+    printf("ERROR num: %d, line: %d, identifier: %s\n",ll, s);
 }
-void semantic_warning(int i, int ll) {
-printf("--- warning at line %d:",ll); switch (i) {
-expression\n");
-} }
-case 11:printf("incompatible types in assignment expression\n"); break;
-case 12:printf("incompatible types in argument or return
-break;
-case 14:printf("incompatible types in binary expression\n");
-break;
-case 16:printf("integer type expression is required\n");
-break; default:printf("unknown\n");
-break;
