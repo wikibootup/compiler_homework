@@ -740,12 +740,15 @@ A_ID *getPointerFieldIdentifier(A_TYPE *t, char *s) {
 }
 BOOLEAN isSameParameterType(A_ID *a, A_ID *b) {
 while (a) {
-if (b==NIL || isNotSameType(a->type,b->type))
-return (FALSE); a=a->link;
-b=b->link;} if (b)
-else
-return (FALSE);
-return (TRUE);
+    if (b==NIL || isNotSameType(a->type,b->type))
+        return (FALSE); 
+        a=a->link;
+        b=b->link;
+    } 
+    if (b)
+        return (FALSE);
+    else
+        return (TRUE);
 }
 BOOLEAN isCompatibleType(A_TYPE *t1, A_TYPE *t2) {
 if (isArrayType(t1) && isArrayType(t2))
