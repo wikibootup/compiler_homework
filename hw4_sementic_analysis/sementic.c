@@ -960,7 +960,9 @@ BOOLEAN isStringType(A_TYPE *t) {
 }
 // convert literal type
 A_LITERAL checkTypeAndConvertLiteral(A_LITERAL result,A_TYPE *t, int ll) {
-if (result.type==int_type && t==int_type || result.type==char_type && t==char_type || result.type==float_type && t==float_type ) ;
+    if (result.type==int_type && t==int_type || 
+            result.type==char_type && t==char_type || 
+            result.type==float_type && t==float_type ) ;
 else if (result.type==int_type && t==float_type){ result.type=float_type;
 result.value.f=result.value.i;}
 else if (result.type==int_type && t==char_type){
