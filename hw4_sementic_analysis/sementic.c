@@ -750,20 +750,22 @@ while (a) {
     else
         return (TRUE);
 }
+
 BOOLEAN isCompatibleType(A_TYPE *t1, A_TYPE *t2) {
-if (isArrayType(t1) && isArrayType(t2))
-if (t1->size==0 || t2->size==0 || t1->size==t2->size)
-else
-return(isCompatibleType(t1->element_type,t2->element_type)); return(FALSE);
-else if (isFunctionType(t1) && isFunctionType(t2))
-if (isSameParameterType(t1->field,t2->field))
-return(isCompatibleType(t1->element_type,t2->element_type));
-else
-return (FALSE);
-else if (isPointerType(t1) && isPointerType(t2))
-else
-return(isCompatibleType(t1->element_type,t2->element_type));
-return(t1==t2);
+    if (isArrayType(t1) && isArrayType(t2))
+        if (t1->size==0 || t2->size==0 || t1->size==t2->size)
+            return(isCompatibleType(t1->element_type,t2->element_type)); 
+        else
+            return(FALSE);
+    else if (isFunctionType(t1) && isFunctionType(t2))
+        if (isSameParameterType(t1->field,t2->field))
+            return(isCompatibleType(t1->element_type,t2->element_type));
+        else
+            return (FALSE);
+    else if (isPointerType(t1) && isPointerType(t2))
+        return(isCompatibleType(t1->element_type,t2->element_type));
+    else
+        return(t1==t2);
 }
 BOOLEAN isConstantZeroExp(A_NODE *node) {
 if (node->name==N_EXP_INT_CONST && node->clink==0) return (TRUE);
