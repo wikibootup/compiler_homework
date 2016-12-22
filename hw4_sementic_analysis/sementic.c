@@ -768,9 +768,10 @@ BOOLEAN isCompatibleType(A_TYPE *t1, A_TYPE *t2) {
         return(t1==t2);
 }
 BOOLEAN isConstantZeroExp(A_NODE *node) {
-if (node->name==N_EXP_INT_CONST && node->clink==0) return (TRUE);
-else
-return (FALSE);
+    if (node->name==N_EXP_INT_CONST && node->clink==0) 
+        return (TRUE);
+    else
+        return (FALSE);
 }
 BOOLEAN isCompatiblePointerType(A_TYPE *t1, A_TYPE *t2) {
 if (isPointerType(t1) && isPointerType(t2)) return(isCompatibleType(t1->element_type,t2->element_type));
