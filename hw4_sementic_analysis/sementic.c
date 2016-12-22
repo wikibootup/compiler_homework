@@ -963,18 +963,24 @@ A_LITERAL checkTypeAndConvertLiteral(A_LITERAL result,A_TYPE *t, int ll) {
     if (result.type==int_type && t==int_type || 
             result.type==char_type && t==char_type || 
             result.type==float_type && t==float_type ) ;
-else if (result.type==int_type && t==float_type){ result.type=float_type;
-result.value.f=result.value.i;}
-else if (result.type==int_type && t==char_type){
-result.type=char_type;
-result.value.c=result.value.i;}
-else if (result.type==float_type && t==int_type){
-result.type=int_type;
-result.value.i=result.value.f;}
-else if (result.type==char_type && t==int_type){
-result.type=int_type; result.value.i=result.value.c;}
-else
-semantic_error(41,ll); return (result);
+    else if (result.type==int_type && t==float_type){
+        result.type=float_type;
+        result.value.f=result.value.i;
+    }
+    else if (result.type==int_type && t==char_type){
+        result.type=char_type;
+        result.value.c=result.value.i;
+    }
+    else if (result.type==float_type && t==int_type){
+        result.type=int_type;
+        result.value.i=result.value.f;
+    }
+    else if (result.type==char_type && t==int_type){
+        result.type=int_type;
+        result.value.i=result.value.c;
+    }
+    else
+        semantic_error(41,ll); return (result);
 }
 A_LITERAL getTypeAndValueOfExpression(A_NODE *node) {
 A_TYPE *t;
