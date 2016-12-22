@@ -799,14 +799,26 @@ A_NODE *convertUsualAssignmentConversion(A_TYPE *t1, A_NODE *node)
     return (node);
 }
 A_NODE *convertUsualUnaryConversion(A_NODE *node) {
-A_TYPE *t; t=node->type;
-if (t==char_type) {
-t=int_type; node=makeNode(N_EXP_CAST,t,NIL,node); node->type=t;}
-else if (isArrayType(t)){ t=setTypeElementType(makeType(T_POINTER),t->element_type); t->size=4;
-node=makeNode(N_EXP_CAST,t,NIL,node);
-node->type=t;}
-else if (isFunctionType(t)){ t=setTypeElementType(makeType(T_POINTER),t); t->size=4; node=makeNode(N_EXP_AMP,NIL,node,NIL); node->type=t;}
-return (node);
+    A_TYPE *t; 
+    t=node->type;
+    if (t==char_type) {
+        t=int_type; 
+        node=makeNode(N_EXP_CAST,t,NIL,node); 
+        node->type=t;
+    }
+    else if (isArrayType(t)){ 
+        t=setTypeElementType(makeType(T_POINTER),t->element_type); 
+        t->size=4;
+        node=makeNode(N_EXP_CAST,t,NIL,node);
+        node->type=t;
+    }
+    else if (isFunctionType(t)){ 
+        t=setTypeElementType(makeType(T_POINTER),t); 
+        t->size=4; 
+        node=makeNode(N_EXP_AMP,NIL,node,NIL); 
+        node->type=t;
+    }
+    return (node);
 }
 A_TYPE *convertUsualBinaryConversion(A_NODE *node) {
     A_TYPE *t1, *t2, *result=NIL; 
