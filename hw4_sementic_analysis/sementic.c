@@ -630,7 +630,7 @@ int sem_A_TYPE(A_TYPE *t)
     return(result);
 }
 
-// set variable address in declaration-list, and return its total variable size int sem_declaration_list(A_ID *id, int addr)
+// set variable address in declaration-list, and return its total variable size 
 int sem_declaration_list(A_ID *, int addr)
 {
     int i=addr; 
