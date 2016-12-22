@@ -843,20 +843,25 @@ A_TYPE *convertUsualBinaryConversion(A_NODE *node) {
     return (result);
 }
 A_NODE *convertCastingConversion(A_NODE *node,A_TYPE *t1) {
-A_TYPE *t2;
-t2=node->type;
-if (!isCompatibleType(t1,t2)) {
-semantic_warning(12,node->line); node=makeNode(N_EXP_CAST,t1,NIL,node); node->type=t1;}
-return (node);
+    A_TYPE *t2;
+    t2=node->type;
+    if (!isCompatibleType(t1,t2)) {
+        semantic_warning(12,node->line); 
+        node=makeNode(N_EXP_CAST,t1,NIL,node); 
+        node->type=t1;
+    }
+    return (node);
 }
 BOOLEAN isAllowableAssignmentConversion(A_TYPE *t1, A_TYPE *t2, A_NODE *node) // t1 <--- t2
 {
-if (isArithmeticType(t1) && isArithmeticType(t2)) return (TRUE);
-else if (isStructOrUnionType(t1) && isCompatibleType(t1,t2)) return (TRUE);
-else if (isPointerType(t1) && (isConstantZeroExp(node) || isCompatiblePointerType(t1,t2)))
-else
-return (TRUE);
-return (FALSE);
+    if (isArithmeticType(t1) && isArithmeticType(t2)) 
+        return (TRUE);
+    else if (isStructOrUnionType(t1) && isCompatibleType(t1,t2)) 
+        return (TRUE);
+    else if (isPointerType(t1) && (isConstantZeroExp(node) || isCompatiblePointerType(t1,t2)))
+        return (TRUE);
+    else
+        return (FALSE);
 }
 BOOLEAN isAllowableCastingConversion(A_TYPE *t1, A_TYPE *t2) t2
 {
