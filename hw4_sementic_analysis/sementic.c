@@ -723,14 +723,20 @@ A_ID *getStructFieldIdentifier(A_TYPE *t, char *s) {
         } 
         return(id);
     }
+
 A_ID *getPointerFieldIdentifier(A_TYPE *t, char *s) {
-A_ID *id=NIL;
-if (t && t->kind==T_POINTER) {
-t=t->element_type;
-if (isStructOrUnionType(t)){
-id=t->field; while (id) {
-if (strcmp(id->name,s)==0) break;
-id=id->link;} } }
+    A_ID *id=NIL;
+    if (t && t->kind==T_POINTER) {
+        t=t->element_type;
+        if (isStructOrUnionType(t)){
+            id=t->field; 
+            while (id) {
+                if (strcmp(id->name,s)==0) 
+                    break;
+                id=id->link;
+            } 
+        } 
+    }
 }
 BOOLEAN isSameParameterType(A_ID *a, A_ID *b) {
 while (a) {
