@@ -631,11 +631,16 @@ int sem_A_TYPE(A_TYPE *t)
 }
 
 // set variable address in declaration-list, and return its total variable size int sem_declaration_list(A_ID *id, int addr)
+int sem_declaration_list(A_ID *, int addr)
 {
-int i=addr; while (id) {
-addr+=sem_declaration(id,addr); id=id->link;
-} return(addr-i);
+    int i=addr; 
+    while (id) {
+        addr+=sem_declaration(id,addr); 
+        id=id->link;
+    } 
+    return(addr-i);
 }
+
 // check declaration (identifier), set address, and return its size int sem_declaration(A_ID *id,int addr)
 {
 A_TYPE *t;
