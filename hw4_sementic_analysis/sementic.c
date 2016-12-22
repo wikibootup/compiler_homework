@@ -963,7 +963,7 @@ A_LITERAL checkTypeAndConvertLiteral(A_LITERAL result,A_TYPE *t, int ll) {
     if (result.type==int_type && t==int_type || 
             result.type==char_type && t==char_type || 
             result.type==float_type && t==float_type ) ;
-    else if (result.type==int_type && t==float_type){
+    else if (result.type==int_type && t==float_type){ 
         result.type=float_type;
         result.value.f=result.value.i;
     }
@@ -976,113 +976,183 @@ A_LITERAL checkTypeAndConvertLiteral(A_LITERAL result,A_TYPE *t, int ll) {
         result.value.i=result.value.f;
     }
     else if (result.type==char_type && t==int_type){
-        result.type=int_type;
+        result.type=int_type; 
         result.value.i=result.value.c;
     }
     else
         semantic_error(41,ll); return (result);
 }
 A_LITERAL getTypeAndValueOfExpression(A_NODE *node) {
-A_TYPE *t;
-A_ID *id;
-A_LITERAL result,r; result.type=NIL; switch(node->name) {
-case N_EXP_IDENT : id=node->clink;
-if (id->kind!=ID_ENUM_LITERAL) semantic_error(19,node->line,id->name);
-case
-case
-case
-case case case case case case case case case case case case
-case
-else {
-result.type=int_type;
-result.value.i=id->init;} break;
-N_EXP_INT_CONST : result.type=int_type; result.value.i=(int)node->clink; break;
-N_EXP_CHAR_CONST : result.type=char_type; result.value.c=(char)node->clink; break;
-N_EXP_FLOAT_CONST : result.type=float_type; result.value.f=atof(node->clink); break;
-N_EXP_STRING_LITERAL : N_EXP_ARRAY : N_EXP_FUNCTION_CALL : N_EXP_STRUCT : N_EXP_ARROW : N_EXP_POST_INC : N_EXP_PRE_INC : N_EXP_POST_DEC : N_EXP_PRE_DEC : N_EXP_AMP : N_EXP_STAR : N_EXP_NOT :
-semantic_error(18,node->line); break;
-N_EXP_MINUS : result=getTypeAndValueOfExpression(node->clink); if (result.type==int_type)
-result.value.i=-result.value.i; else if (result.type==float_type)
-result.value.f=-result.value.f;
-else
-semantic_error(18,node->line); break;
-N_EXP_SIZE_EXP : t=sem_expression(node->clink);
-case
-result.type=int_type; result.value.i=t->size; break;
-case N_EXP_SIZE_TYPE : result.type=int_type;
-result.value.i=sem_A_TYPE(node->clink);
-break;
-case N_EXP_CAST :
-result=getTypeAndValueOfExpression(node->rlink);
-result=checkTypeAndConvertLiteral(result,(A_TYPE*)node->llink,node->line); break;
-case N_EXP_MUL : result=getTypeAndValueOfExpression(node->llink); r=getTypeAndValueOfExpression(node->rlink);
-if (result.type==int_type && r.type==int_type){
-result.type=int_type;
-result.value.i=result.value.i*r.value.i;}
-else if (result.type==int_type && r.type==float_type){
-result.type=float_type;
-result.value.f=result.value.i*r.value.f;}
-else if (result.type==float_type && r.type==int_type){
-result.type=float_type;
-result.value.f=result.value.f*r.value.i;}
-else if (result.type==float_type && r.type==float_type){
-result.type=float_type; result.value.f=result.value.f*r.value.f;}
-else
-semantic_error(18,node->line); break;
-case N_EXP_DIV : result=getTypeAndValueOfExpression(node->llink); r=getTypeAndValueOfExpression(node->rlink);
-if (result.type==int_type && r.type==int_type){
-result.type=int_type;
-result.value.i=result.value.i/r.value.i;}
-else if (result.type==int_type && r.type==float_type){
-result.type=float_type;
-result.value.f=result.value.i/r.value.f;}
-else if (result.type==float_type && r.type==int_type){
-result.type=float_type;
-result.value.f=result.value.f/r.value.i;}
-else if (result.type==float_type && r.type==float_type){
-result.type=float_type; result.value.f=result.value.f/r.value.f;}
-else
-semantic_error(18,node->line); break;
-case N_EXP_MOD : result=getTypeAndValueOfExpression(node->llink); r=getTypeAndValueOfExpression(node->rlink);
-if (result.type==int_type && r.type==int_type)
-result.value.i=result.value.i%r.value.i;
-else
-semantic_error(18,node->line); break;
-case N_EXP_ADD : result=getTypeAndValueOfExpression(node->llink); r=getTypeAndValueOfExpression(node->rlink);
-if (result.type==int_type && r.type==int_type){
-result.type=int_type;
-result.value.i=result.value.i+r.value.i;}
-else if (result.type==int_type && r.type==float_type){
-result.type=float_type;
-result.value.f=result.value.i+r.value.f;}
-else if (result.type==float_type && r.type==int_type){
-result.type=float_type;
-result.value.f=result.value.f+r.value.i;}
-else if (result.type==float_type && r.type==float_type){
-result.type=float_type; result.value.f=result.value.f+r.value.f;}
-else
-semantic_error(18,node->line); break;
-case N_EXP_SUB : result=getTypeAndValueOfExpression(node->llink); r=getTypeAndValueOfExpression(node->rlink);
-if (result.type==int_type && r.type==int_type){
-result.type=int_type;
-result.value.i=result.value.i-r.value.i;}
-else if (result.type==int_type && r.type==float_type){
-result.type=float_type;
-case case case case case case case case case
-result.value.f=result.value.i-r.value.f;}
-else if (result.type==float_type && r.type==int_type){
-result.type=float_type;
-result.value.f=result.value.f-r.value.i;}
-else if (result.type==float_type && r.type==float_type){
-result.type=float_type; result.value.f=result.value.f-r.value.f;}
-else
-semantic_error(18,node->line); break;
-N_EXP_LSS : N_EXP_GTR : N_EXP_LEQ : N_EXP_GEQ : N_EXP_NEQ : N_EXP_EQL : N_EXP_AND : N_EXP_OR : N_EXP_ASSIGN :
-semantic_error(18,node->line);
-break; default :
-semantic_error(90,node->line);
-break; }
-return (result);
+    A_TYPE *t;
+    A_ID *id;
+    A_LITERAL result,r; 
+    result.type=NIL; 
+    switch(node->name) {
+        case N_EXP_IDENT : 
+            id=node->clink;
+            if (id->kind!=ID_ENUM_LITERAL) 
+                semantic_error(19,node->line,id->name);
+            else {
+                result.type=int_type;
+                result.value.i=id->init;
+            } 
+            break;
+        case N_EXP_INT_CONST : 
+            result.type=int_type; 
+            result.value.i=(int)node->clink; 
+            break;
+        case N_EXP_CHAR_CONST : 
+            result.type=char_type; 
+            result.value.c=(char)node->clink; 
+            break;
+        case N_EXP_FLOAT_CONST : 
+            result.type=float_type; 
+            result.value.f=atof(node->clink); 
+            break;
+        case N_EXP_STRING_LITERAL : 
+        case N_EXP_ARRAY : 
+        case N_EXP_FUNCTION_CALL : 
+        case N_EXP_STRUCT : 
+        case N_EXP_ARROW : 
+        case N_EXP_POST_INC : 
+        case N_EXP_PRE_INC : 
+        case N_EXP_POST_DEC : 
+        case N_EXP_PRE_DEC : 
+        case N_EXP_AMP : 
+        case N_EXP_STAR : 
+        case N_EXP_NOT :
+            semantic_error(18,node->line); 
+            break;
+        case N_EXP_MINUS : 
+            result=getTypeAndValueOfExpression(node->clink); 
+            if (result.type==int_type)
+                result.value.i=-result.value.i; 
+            else if (result.type==float_type)
+                result.value.f=-result.value.f;
+        else
+            semantic_error(18,node->line); 
+            break;
+        case N_EXP_SIZE_EXP : 
+            t=sem_expression(node->clink);
+            result.type=int_type; 
+            result.value.i=t->size; 
+            break;
+        case N_EXP_SIZE_TYPE : 
+            result.type=int_type;
+            result.value.i=sem_A_TYPE(node->clink);
+            break;
+        case N_EXP_CAST :
+            result=getTypeAndValueOfExpression(node->rlink);
+            result=checkTypeAndConvertLiteral(result,(A_TYPE*)node->llink,node->line); 
+            break;
+        case N_EXP_MUL : 
+            result=getTypeAndValueOfExpression(node->llink); 
+            r=getTypeAndValueOfExpression(node->rlink);
+            if (result.type==int_type && r.type==int_type){
+                result.type=int_type;
+                result.value.i=result.value.i*r.value.i;
+            }
+            else if (result.type==int_type && r.type==float_type){
+                result.type=float_type;
+                result.value.f=result.value.i*r.value.f;
+            }
+            else if (result.type==float_type && r.type==int_type){
+                result.type=float_type;
+                result.value.f=result.value.f*r.value.i;
+            }
+            else if (result.type==float_type && r.type==float_type){
+                result.type=float_type; 
+                result.value.f=result.value.f*r.value.f;
+            }
+            else
+                semantic_error(18,node->line); 
+            break;
+        case N_EXP_DIV : 
+            result=getTypeAndValueOfExpression(node->llink); 
+            r=getTypeAndValueOfExpression(node->rlink);
+        if (result.type==int_type && r.type==int_type){
+            result.type=int_type;
+            result.value.i=result.value.i/r.value.i;
+        }
+        else if (result.type==int_type && r.type==float_type){
+            result.type=float_type;
+            result.value.f=result.value.i/r.value.f;
+        }
+        else if (result.type==float_type && r.type==int_type){
+            result.type=float_type;
+            result.value.f=result.value.f/r.value.i;
+        }
+        else if (result.type==float_type && r.type==float_type){
+            result.type=float_type; 
+            result.value.f=result.value.f/r.value.f;
+        }
+        else
+            semantic_error(18,node->line); 
+        break;
+        case N_EXP_MOD : 
+            result=getTypeAndValueOfExpression(node->llink); 
+            r=getTypeAndValueOfExpression(node->rlink);
+            if (result.type==int_type && r.type==int_type)
+                result.value.i=result.value.i%r.value.i;
+            else
+            semantic_error(18,node->line); break;
+        case N_EXP_ADD : 
+            result=getTypeAndValueOfExpression(node->llink); 
+            r=getTypeAndValueOfExpression(node->rlink);
+        if (result.type==int_type && r.type==int_type){
+            result.type=int_type;
+            result.value.i=result.value.i+r.value.i;}
+        else if (result.type==int_type && r.type==float_type){
+            result.type=float_type;
+            result.value.f=result.value.i+r.value.f;
+        }
+        else if (result.type==float_type && r.type==int_type){
+            result.type=float_type;
+            result.value.f=result.value.f+r.value.i;
+        }
+        else if (result.type==float_type && r.type==float_type){
+            result.type=float_type; result.value.f=result.value.f+r.value.f;
+        }
+            else
+                semantic_error(18,node->line); 
+            break;
+        case N_EXP_SUB : 
+            result=getTypeAndValueOfExpression(node->llink); 
+            r=getTypeAndValueOfExpression(node->rlink);
+        if (result.type==int_type && r.type==int_type){
+            result.type=int_type;
+            result.value.i=result.value.i - r.value.i;
+        }
+        else if (result.type==int_type && r.type==float_type){
+            result.type=float_type;
+        result.value.f=result.value.i - r.value.f;}
+        else if (result.type==float_type && r.type==int_type){
+            result.type=float_type;
+            result.value.f=result.value.f-r.value.i;
+        }
+        else if (result.type==float_type && r.type==float_type){
+            result.type=float_type; 
+            result.value.f=result.value.f-r.value.f;
+        }
+        else
+            semantic_error(18,node->line); 
+        break;
+        case N_EXP_LSS :
+        case N_EXP_GTR :
+        case N_EXP_LEQ :
+        case N_EXP_GEQ :
+        case N_EXP_NEQ :
+        case N_EXP_EQL :
+        case N_EXP_AND :
+        case N_EXP_OR :
+        case N_EXP_ASSIGN :
+            semantic_error(18,node->line);
+            break; 
+        default :
+            semantic_error(90,node->line);
+            break; 
+    }// close switch statement
+    return (result);
 }
 void semantic_error(int i, int ll, char *s) {
 semantic_err++;
