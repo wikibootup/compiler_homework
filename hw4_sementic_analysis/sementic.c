@@ -824,13 +824,23 @@ A_TYPE *convertUsualBinaryConversion(A_NODE *node) {
     A_TYPE *t1, *t2, *result=NIL; 
     t1=node->llink->type; 
     t2=node->rlink->type;
-if(isFloatType(t1) && !isFloatType(t2)) {
-semantic_warning(14,node->line); node->rlink=makeNode(N_EXP_CAST,t1,NIL,node->rlink); node->rlink->type=t1;
-result=t1;}
-else if(!isFloatType(t1) && isFloatType(t2)) { semantic_warning(14,node->line); node->llink=makeNode(N_EXP_CAST,t2,NIL,node->llink); node->llink->type=t2;
-result=t2;} else if (t1==t2)
-result=t1; else
-result=int_type; return (result);
+    if(isFloatType(t1) && !isFloatType(t2)) {
+        semantic_warning(14,node->line); 
+        node->rlink=makeNode(N_EXP_CAST,t1,NIL,node->rlink); 
+        node->rlink->type=t1;
+        result=t1;
+    }
+    else if(!isFloatType(t1) && isFloatType(t2)) { 
+        semantic_warning(14,node->line); 
+        node->llink=makeNode(N_EXP_CAST,t2,NIL,node->llink); 
+        node->llink->type=t2;
+        result=t2;
+    } 
+    else if (t1==t2)
+        result=t1; 
+    else
+        result=int_type; 
+    return (result);
 }
 A_NODE *convertCastingConversion(A_NODE *node,A_TYPE *t1) {
 A_TYPE *t2;
