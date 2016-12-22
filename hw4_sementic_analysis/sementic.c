@@ -886,65 +886,77 @@ BOOLEAN isFloatType(A_TYPE *t) {
         return(FALSE);
 }
 BOOLEAN isArithmeticType(A_TYPE *t) {
-if (t && t->kind==T_ENUM) return(TRUE);
-else
-return(FALSE);
+    if (t && t->kind==T_ENUM) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isScalarType(A_TYPE *t) {
-if (t && ((t->kind==T_ENUM) || (t->kind==T_POINTER))) return(TRUE);
-else
-return(FALSE);
+    if (t && ((t->kind==T_ENUM) || (t->kind==T_POINTER))) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isAnyIntegerType(A_TYPE *t) {
-if ( t && (t==int_type || t==char_type)) return(TRUE);
-else
-return(FALSE);
+    if ( t && (t==int_type || t==char_type)) 
+        return(TRUE);
+    else
+    return(FALSE);
 }
 BOOLEAN isIntegralType(A_TYPE *t) {
-if ( t && t->kind==T_ENUM && t!=float_type) return(TRUE);
-else
-return(FALSE);
+    if ( t && t->kind==T_ENUM && t!=float_type) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isFunctionType(A_TYPE *t) {
-if (t && t->kind==T_FUNC) return(TRUE);
-else
-return(FALSE);
-BOOLEAN isStructOrUnionType(A_TYPE *t)
+    if (t && t->kind==T_FUNC) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
+BOOLEAN isStructOrUnionType(A_TYPE *t)
 {
-if (t && (t->kind==T_STRUCT || t->kind==T_UNION)) return(TRUE);
-else
-return(FALSE);
+    if (t && (t->kind==T_STRUCT || t->kind==T_UNION)) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isPointerType(A_TYPE *t) {
-if (t && t->kind==T_POINTER) return(TRUE);
-else
-return(FALSE);
+    if (t && t->kind==T_POINTER) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isPointerOrArrayType(A_TYPE *t) {
-if (t && ( t->kind==T_POINTER || t->kind == T_ARRAY)) return(TRUE);
-else
-return(FALSE);
+    if (t && ( t->kind==T_POINTER || t->kind == T_ARRAY)) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isIntType(A_TYPE *t) {
-if (t && t==int_type) return(TRUE);
-else
-return(FALSE);
+    if (t && t==int_type) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isVoidType(A_TYPE *t) {
-if (t && t==void_type) return(TRUE);
-else
-return(FALSE);
+    if (t && t==void_type) 
+        return(TRUE);
+    else
+        return(FALSE);
 }
 BOOLEAN isArrayType(A_TYPE *t) {
-if (t && t->kind==T_ARRAY) return(TRUE);
-else }
-return(FALSE);
+    if (t && t->kind==T_ARRAY) 
+        return(TRUE);
+    else
+        return(FALSE);
+}
 BOOLEAN isStringType(A_TYPE *t) {
-if (t && (t->kind==T_POINTER||t->kind==T_ARRAY) && t->element_type==char_type)
-else
-return(TRUE);
-return(FALSE);
+    if (t && (t->kind==T_POINTER||t->kind==T_ARRAY) && t->element_type==char_type)
+        return(TRUE);
+    else
+        return(FALSE);
 }
 // convert literal type
 A_LITERAL checkTypeAndConvertLiteral(A_LITERAL result,A_TYPE *t, int ll) {
