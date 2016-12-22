@@ -774,20 +774,29 @@ BOOLEAN isConstantZeroExp(A_NODE *node) {
         return (FALSE);
 }
 BOOLEAN isCompatiblePointerType(A_TYPE *t1, A_TYPE *t2) {
-if (isPointerType(t1) && isPointerType(t2)) return(isCompatibleType(t1->element_type,t2->element_type));
-else
-return(FALSE);
+    if (isPointerType(t1) && isPointerType(t2)) 
+        return(isCompatibleType(t1->element_type,t2->element_type));
+    else
+        return(FALSE);
 }
 A_NODE *convertScalarToInteger(A_NODE *node) {
-if (isFloatType(node->type)) { semantic_warning(16,node->line); node=makeNode(N_EXP_CAST,int_type,NIL,node); }
-node->type=int_type; return(node);
+    if (isFloatType(node->type)) {
+        semantic_warning(16,node->line); 
+        node=makeNode(N_EXP_CAST,int_type,NIL,node); 
+    }
+    node->type=int_type; 
+    return(node);
 }
-A_NODE *convertUsualAssignmentConversion(A_TYPE *t1, A_NODE *node) {
-A_TYPE *t2;
-t2=node->type;
-if (!isCompatibleType(t1,t2)) {
-semantic_warning(11,node->line); node=makeNode(N_EXP_CAST,t1,NIL,node); node->type=t1;}
-return (node);
+A_NODE *convertUsualAssignmentConversion(A_TYPE *t1, A_NODE *node) 
+{
+    A_TYPE *t2;
+    t2=node->type;
+    if (!isCompatibleType(t1,t2)) {
+        semantic_warning(11,node->line); 
+        node=makeNode(N_EXP_CAST,t1,NIL,node); 
+        node->type=t1;
+    }
+    return (node);
 }
 A_NODE *convertUsualUnaryConversion(A_NODE *node) {
 A_TYPE *t; t=node->type;
