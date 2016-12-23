@@ -22,15 +22,18 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    printf("\nstart syntax analysis\n"); initialize();
+    printf("\nstart syntax analysis\n"); 
+    initialize();
     
     yyparse();
     
     if (syntax_err)
         exit(1);
-
 //    print_ast(root);// for syntax parse tree    
+
+    printf("start semantic analysis\n"); 
     semantic_analysis(root);
+
     exit(0);
 
     return 0;
