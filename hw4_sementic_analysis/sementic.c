@@ -660,46 +660,46 @@ int sem_declaration(A_ID *id,int addr)
                  size=i; 
              } 
              break;
-//         case ID_FIELD:
-//             i=sem_A_TYPE(id->type);
-//             if (isFunctionType(id->type) || isVoidType(id->type))
-//                 semantic_error(84,id->line); 
-//             if (i%4)
-//                 i=i/4*4+4; 
-//             id->address=addr;
-//             size=i;
-//             break; 
-//         case ID_FUNC:
-//             i=sem_A_TYPE(id->type);
-//             break; 
-//         case ID_PARM:
-//             if (id->type)
-//             { 
-//                 size=sem_A_TYPE(id->type);
-//                 // usual unary conversion of parm type 
-//                 if (id->type==char_type)
-//                     id->type=int_type;
-//                 else if (isArrayType(id->type)){
-//                     id->type->kind=T_POINTER;
-//                     id->type->size=4;
-//                 }
-//                 else if (isFunctionType(id->type)) {
-//                     t=makeType(T_POINTER); 
-//                     t->element_type=id->type; 
-//                     t->size=4;
-//                     id->type=t; 
-//                 }
-//                 size=id->type->size; 
-//                 if (size%4)
-//                     size=size/4*4+4; 
-//                 id->address=addr;
-//             }
-//             break; 
-//         case ID_TYPE:
-//             i=sem_A_TYPE(id->type);
-//             break; 
-        default:
-//            semantic_error(89,id->line,id->name);
+         case ID_FIELD:
+             i=sem_A_TYPE(id->type);
+             if (isFunctionType(id->type) || isVoidType(id->type))
+                 semantic_error(84,id->line); 
+             if (i%4)
+                 i=i/4*4+4; 
+             id->address=addr;
+             size=i;
+             break; 
+         case ID_FUNC:
+             i=sem_A_TYPE(id->type);
+             break; 
+         case ID_PARM:
+             if (id->type)
+             { 
+                 size=sem_A_TYPE(id->type);
+                 // usual unary conversion of parm type 
+                 if (id->type==char_type)
+                     id->type=int_type;
+                 else if (isArrayType(id->type)){
+                     id->type->kind=T_POINTER;
+                     id->type->size=4;
+                 }
+                 else if (isFunctionType(id->type)) {
+                     t=makeType(T_POINTER); 
+                     t->element_type=id->type; 
+                     t->size=4;
+                     id->type=t; 
+                 }
+                 size=id->type->size; 
+                 if (size%4)
+                     size=size/4*4+4; 
+                 id->address=addr;
+             }
+             break; 
+         case ID_TYPE:
+             i=sem_A_TYPE(id->type);
+             break; 
+      default:
+            semantic_error(89,id->line,id->name);
             break; 
     }
     return (size);
