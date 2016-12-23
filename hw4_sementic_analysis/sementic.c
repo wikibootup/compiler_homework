@@ -1206,3 +1206,8 @@ void semantic_error(int i, int ll, char *s) {
     semantic_err++;
     printf("ERROR num: %d, line: %d, identifier: %s\n",i, ll, s);
 }
+
+void semantic_warning(int i, int ll)
+{
+    printf("WARNING num: %d, line: %d\n",i, ll);
+}
