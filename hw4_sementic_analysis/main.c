@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
     
     if (syntax_err)
         exit(1);
-//    print_ast(root);// for syntax parse tree    
+    print_ast(root);// for syntax parse tree    
 
     printf("start semantic analysis\n"); 
     semantic_analysis(root);
