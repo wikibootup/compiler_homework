@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "type.h"
+#include "sementic.c"
+
 extern FILE *yyin;
 extern int syntax_err;
 extern A_NODE *root;
@@ -27,7 +29,8 @@ int main(int argc, char *argv[]) {
     if (syntax_err)
         exit(1);
     
-    print_ast(root);
+    semantic_analysys(root);
+    print_ast(root);// for syntax parse tree 
     exit(0);
 
     return 0;
