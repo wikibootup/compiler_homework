@@ -1,6 +1,7 @@
 // resource & copyright : 책, C언어와 컴파일러, 2015, (유재우, 최재영, 신경희), SSU Press
 
 // included by student
+#include <stdio.h>
 #include <string.h>
 
 #include "type.h"
