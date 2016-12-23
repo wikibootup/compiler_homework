@@ -33,7 +33,7 @@ case N_PROGRAM:
     prt_sem_A_ID_LIST(node->clink, s+1);
 break; 
 default :
-printf("****syntax tree error******");
+printf("****semantic tree error******");
 }}
 
 void prt_sem_initializer(A_NODE *node, int s) {
@@ -43,7 +43,7 @@ case N_INIT_LIST: prt_sem_initializer(node->llink, s+1); prt_sem_initializer(nod
 case N_INIT_LIST_ONE: prt_sem_expression(node->clink, s+1); break;
 case N_INIT_LIST_NIL: break;
 default :
-printf("****syntax tree error******");
+printf("****semantic tree error******");
 }}
 void prt_sem_expression(A_NODE *node, int s) {
 print_node(node,s); switch(node->name) {
@@ -85,7 +85,7 @@ case N_EXP_AND :
 case N_EXP_OR : 
 case N_EXP_ASSIGN : prt_sem_expression(node->llink, s+1); prt_sem_expression(node->rlink, s+1); break;
 default :
-printf("****syntax tree error******");
+printf("****semantic tree error******");
 }}
 
 void prt_sem_arg_expr_list(A_NODE *node, int s) {
@@ -94,7 +94,7 @@ print_node(node,s); switch(node->name) {
 case N_ARG_LIST : prt_sem_expression(node->llink, s+1); prt_sem_arg_expr_list(node->rlink, s+1); break;
 case N_ARG_LIST_NIL : break;
 default :
-printf("****syntax tree error******");
+printf("****semantic tree error******");
 }}
 
 void prt_sem_statement(A_NODE *node, int s) {
@@ -114,7 +114,7 @@ case N_STMT_CONTINUE: break;
 case N_STMT_BREAK: break;
 case N_STMT_RETURN: if(node->clink) prt_sem_expression(node->clink, s+1); break;
 default :
-printf("****syntax tree error******");
+printf("****semantic tree error******");
 }}
 void prt_sem_statement_list(A_NODE *node, int s)
 {
@@ -122,7 +122,7 @@ print_node(node,s); switch(node->name) {
 case N_STMT_LIST: prt_sem_statement(node->llink, s+1); prt_sem_statement_list(node->rlink, s+1); break;
 case N_STMT_LIST_NIL: break;
 default :
-printf("****syntax tree error******");
+printf("****semantic tree error******");
 }}
 
 void prt_sem_for_expression(A_NODE *node, int s) {
@@ -130,7 +130,7 @@ print_node(node,s);
 switch(node->name) { 
     case N_FOR_EXP : if(node->llink) prt_sem_expression(node->llink, s+1); if(node->clink) prt_sem_expression(node->clink, s+1); if(node->rlink) prt_sem_expression(node->rlink, s+1); break;
 default :
-printf("****syntax tree error******");
+printf("****semantic tree error******");
 }}
 
 void prt_sem_integer(int a, int s) {
