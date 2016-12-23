@@ -350,11 +350,11 @@ A_TYPE *sem_expression(A_NODE *node) {
 		case N_EXP_EQL : 
             t1=sem_expression(node->llink); 
             t2=sem_expression(node->rlink);
-            if (isArithmetictype(t1) && isArithmetictype(t2))
-                result=convertUsualBinary(node); 
+            if (isArithmeticType(t1) && isArithmeticType(t2))
+                result=convertUsualBinaryConversion(node); 
             else if (!isCompatiblePointerType(t1,t2) &&
-                (!isPointerType(t1) || isconstantzeroexp(node->rlink)) &&
-                (!isPointerType(t2) || isconstantzeroexp(node->rlink)))
+                (!isPointerType(t1) || isConstantZeroExp(node->rlink)) &&
+                (!isPointerType(t2) || isConstantZeroExp(node->rlink)))
                 semantic_error(40, node->line);
             result = int_type;
             break;
