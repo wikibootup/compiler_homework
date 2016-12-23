@@ -1,3 +1,5 @@
+#pragma once
+
 #define NIL 0
 typedef enum {FALSE,TRUE} BOOLEAN; 
 
