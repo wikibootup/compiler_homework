@@ -9,6 +9,7 @@ extern A_NODE *root;
 FILE *fout;
 void initialize();
 void print_ast();
+void print_sem_ast();
 extern FILE *yyin;
 
 int main(int argc, char *argv[]) {
@@ -33,6 +34,7 @@ int main(int argc, char *argv[]) {
 
     printf("start semantic analysis\n"); 
     semantic_analysis(root);
+    print_sem_ast(root);
 
     exit(0);
 

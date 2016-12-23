@@ -641,25 +641,25 @@ int sem_declaration(A_ID *id,int addr)
     A_LITERAL lit; 
     
     switch (id->kind) {
-//         case ID_VAR:
-//             i=sem_A_TYPE(id->type);
-//             // check empty array
-//             if (isArrayType(id->type) && id->type->expr==NIL)
-//                 semantic_error(86,id->line); 
-//             if (i%4) 
-//                 i=i/4*4+4;
-//             if (id->specifier==S_STATIC) 
-//                 id->level=0;
-//             if (id->level==0) // if global scope
-//             { 
-//                 id->address=global_address;
-//                 global_address+=i;
-//             } 
-//             else {
-//                 id->address=addr;
-//                 size=i; 
-//             } 
-//             break;
+         case ID_VAR:
+             i=sem_A_TYPE(id->type);
+             // check empty array
+             if (isArrayType(id->type) && id->type->expr==NIL)
+                 semantic_error(86,id->line); 
+             if (i%4) 
+                 i=i/4*4+4;
+             if (id->specifier==S_STATIC) 
+                 id->level=0;
+             if (id->level==0) // if global scope
+             { 
+                 id->address=global_address;
+                 global_address+=i;
+             } 
+             else {
+                 id->address=addr;
+                 size=i; 
+             } 
+             break;
 //         case ID_FIELD:
 //             i=sem_A_TYPE(id->type);
 //             if (isFunctionType(id->type) || isVoidType(id->type))
