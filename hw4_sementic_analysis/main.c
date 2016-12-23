@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "type.h"
-#include "sementic.c"
+#include "sementic.h"
 
 extern FILE *yyin;
 extern int syntax_err;
@@ -28,9 +28,9 @@ int main(int argc, char *argv[]) {
     
     if (syntax_err)
         exit(1);
-    
-    semantic_analysys(root);
-    print_ast(root);// for syntax parse tree 
+
+//    print_ast(root);// for syntax parse tree    
+    semantic_analysis(root);
     exit(0);
 
     return 0;

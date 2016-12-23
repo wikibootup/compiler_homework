@@ -42,7 +42,7 @@ A_TYPE *setTypeAndKindOfDeclarator(A_TYPE *,ID_KIND,A_ID *);
 A_TYPE *setTypeStructOrEnumIdentifier(T_KIND,char *,ID_KIND);
 BOOLEAN isNotSameFormalParameters(A_ID *, A_ID *); 
 BOOLEAN isNotSameType(A_TYPE *, A_TYPE *); 
-//BOOLEAN isPointerOrArrayType(A_TYPE *); // it was defined in sementic.c 
+BOOLEAN isPointerOrArrayType(A_TYPE *); // it was defined in sementic.c 
 
 void syntax_error();
 void initialize();
@@ -461,9 +461,9 @@ BOOLEAN isNotSameType(A_TYPE *t1, A_TYPE *t2) {
         return (t1!=t2);
 }
 // it was defined in sementic.c 
-//BOOLEAN isPointerOrArrayType(A_TYPE *t) {
-//    return (t && (t->kind == T_POINTER || t->kind == T_ARRAY));
-//}
+BOOLEAN isPointerOrArrayType(A_TYPE *t) {
+    return (t && (t->kind == T_POINTER || t->kind == T_ARRAY));
+}
 void initialize() 
 {
     // primitive data types
