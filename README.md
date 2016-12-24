@@ -3,7 +3,7 @@
 ```
 $ lex <lex file name>.l
 $ yacc -d <yacc file name>.y
-$ cc y.tab.c lex.yy.c main.c syntax.c print.c [and so on] -ll
+$ cc y.tab.c lex.yy.c main.c syntax.c print.c print_sem.c sementic.c [and so on] -ll
 $ a.out <test file>
 
 in yacc

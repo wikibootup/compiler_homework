@@ -1,59 +1,6 @@
 // resource & copyright : 책, C언어와 컴파일러, 2015, (유재우, 최재영, 신경희), SSU Press
+#include "sementic.h"
 
-// included by student
-#include <stdio.h>
-#include <string.h>
-
-#include "type.h"
-float atof();
-void semantic_analysis(A_NODE *);
-void set_literal_address(A_NODE *);
-int put_literal(A_LITERAL, int);
-void sem_program(A_NODE *);
-A_TYPE*sem_expression(A_NODE *);
-int sem_statement(A_NODE *, int, A_TYPE *, BOOLEAN, BOOLEAN, BOOLEAN); 
-int sem_statement_list(A_NODE *, int, A_TYPE *, BOOLEAN, BOOLEAN, BOOLEAN);
-void sem_for_expression(A_NODE *);
-int sem_A_TYPE(A_TYPE *) ;
-int sem_declaration_list(A_ID *id, int addr);
-int sem_declaration(A_ID *,int);
-void sem_arg_expr_list(A_NODE *, A_ID *);
-A_ID *getStructFieldIdentifier(A_TYPE *, char *);
-A_ID *getPointerFieldIdentifier(A_TYPE *, char *);
-A_NODE *convertScalarToInteger(A_NODE *);
-A_NODE *convertUsualAssignmentConversion(A_TYPE *, A_NODE *);
-A_NODE *convertUsualUnaryConversion(A_NODE *);
-A_TYPE *convertUsualBinaryConversion(A_NODE *);
-A_NODE *convertCastingConversion(A_NODE *,A_TYPE *);
-BOOLEAN isAllowableAssignmentConversion(A_TYPE *, A_TYPE *, A_NODE *); BOOLEAN isAllowableCastingConversion(A_TYPE *, A_TYPE *);
-BOOLEAN isModifiableLvalue(A_NODE *);
-BOOLEAN isConstantZeroExp(A_NODE *);
-BOOLEAN isSameParameterType(A_ID *, A_ID *);
-BOOLEAN isNotSameType(A_TYPE *, A_TYPE *);
-BOOLEAN isCompatibleType(A_TYPE *, A_TYPE *);
-BOOLEAN isCompatiblePointerType(A_TYPE *, A_TYPE *);
-BOOLEAN isIntType(A_TYPE *);
-BOOLEAN isFloatType(A_TYPE *);
-BOOLEAN isArithmeticType(A_TYPE *);
-BOOLEAN isAnyIntegerType(A_TYPE *);
-BOOLEAN isIntegralType(A_TYPE *);
-BOOLEAN isStructOrUnionType(A_TYPE *);
-BOOLEAN isFunctionType(A_TYPE *);
-BOOLEAN isScalarType(A_TYPE *);
-BOOLEAN isPointerType(A_TYPE *);
-BOOLEAN isPointerOrArrayType(A_TYPE *);
-BOOLEAN isArrayType(A_TYPE *);
-BOOLEAN isStringType(A_TYPE *);
-BOOLEAN isVoidType(A_TYPE *);
-A_LITERAL checkTypeAndConvertLiteral(A_LITERAL,A_TYPE*, int); 
-A_LITERAL getTypeAndValueOfExpression(A_NODE *);
-A_TYPE *setTypeElementType(A_TYPE *, A_TYPE *);
-A_TYPE *makeType(T_KIND);
-void setTypeSize(A_TYPE *, int);
-void semantic_warning(int, int);
-void semantic_error();
-A_NODE *makeNode(NODE_NAME, A_NODE *, A_NODE *, A_NODE*);
-extern A_TYPE *int_type, *float_type, *char_type, *string_type, *void_type; 
 int global_address=12;
 int semantic_err=0;
 #define LIT_MAX 100
@@ -62,8 +9,8 @@ int literal_no=0;
 int literal_size=0;
 
 void semantic_analysis(A_NODE *node) {
-    sem_program(node); 
-    set_literal_address(node);
+     sem_program(node); 
+     set_literal_address(node);
 }
 
 // 프로그램 실행시 상수 영역이 보관되는 주소 계산
@@ -75,16 +22,16 @@ void set_literal_address(A_NODE *node) {
 }
 
 void sem_program(A_NODE *node) {
-    int i; 
-    switch(node->name) {
-    case N_PROGRAM : 
-        i = sem_declaration_list(node->clink,12); // first parm addr = 12
-        node->value = global_address;
-        break;
-    default :
-        semantic_error(90,node->line); 
-        break;
-    }
+     int i; 
+     switch(node->name) {
+     case N_PROGRAM : 
+         i = sem_declaration_list(node->clink,12); // first parm addr = 12
+         node->value = global_address;
+         break;
+     default :
+         semantic_error(90,node->line); 
+         break;
+     }
 }
 
 int put_literal(A_LITERAL lit, int ll) {
@@ -158,7 +105,7 @@ A_TYPE *sem_expression(A_NODE *node) {
             t=convertUsualBinaryConversion(node); 
             t1=node->llink->type; 
             t2=node->rlink->type;
-            if (isPointerOrArrayType(t1)) 
+            if (isPointerOrArrayType_sem(t1)) 
                 result=t1->element_type;
             else
                 semantic_error(32,node->line); 
@@ -694,64 +641,64 @@ int sem_declaration(A_ID *id,int addr)
     A_LITERAL lit; 
     
     switch (id->kind) {
-        case ID_VAR:
-            i=sem_A_TYPE(id->type);
-            // check empty array
-            if (isArrayType(id->type) && id->type->expr==NIL)
-                semantic_error(86,id->line); 
-            if (i%4) 
-                i=i/4*4+4;
-            if (id->specifier==S_STATIC) 
-                id->level=0;
-            if (id->level==0) // if global scope
-            { 
-                id->address=global_address;
-                global_address+=i;
-            } 
-            else {
-                id->address=addr;
-                size=i; 
-            } 
-            break;
-        case ID_FIELD:
-            i=sem_A_TYPE(id->type);
-            if (isFunctionType(id->type) || isVoidType(id->type))
-                semantic_error(84,id->line); 
-            if (i%4)
-                i=i/4*4+4; 
-            id->address=addr;
-            size=i;
-            break; 
-        case ID_FUNC:
-            i=sem_A_TYPE(id->type);
-            break; 
-        case ID_PARM:
-            if (id->type)
-            { 
-                size=sem_A_TYPE(id->type);
-                // usual unary conversion of parm type 
-                if (id->type==char_type)
-                    id->type=int_type;
-                else if (isArrayType(id->type)){
-                    id->type->kind=T_POINTER;
-                    id->type->size=4;
-                }
-                else if (isFunctionType(id->type)) {
-                    t=makeType(T_POINTER); 
-                    t->element_type=id->type; 
-                    t->size=4;
-                    id->type=t; 
-                }
-                size=id->type->size; 
-                if (size%4)
-                    size=size/4*4+4; 
-                id->address=addr;
-            }
-            break; 
-        case ID_TYPE:
-            i=sem_A_TYPE(id->type);
-            break; 
-        default:
+         case ID_VAR:
+             i=sem_A_TYPE(id->type);
+             // check empty array
+             if (isArrayType(id->type) && id->type->expr==NIL)
+                 semantic_error(86,id->line); 
+             if (i%4) 
+                 i=i/4*4+4;
+             if (id->specifier==S_STATIC) 
+                 id->level=0;
+             if (id->level==0) // if global scope
+             { 
+                 id->address=global_address;
+                 global_address+=i;
+             } 
+             else {
+                 id->address=addr;
+                 size=i; 
+             } 
+             break;
+         case ID_FIELD:
+             i=sem_A_TYPE(id->type);
+             if (isFunctionType(id->type) || isVoidType(id->type))
+                 semantic_error(84,id->line); 
+             if (i%4)
+                 i=i/4*4+4; 
+             id->address=addr;
+             size=i;
+             break; 
+         case ID_FUNC:
+             i=sem_A_TYPE(id->type);
+             break; 
+         case ID_PARM:
+             if (id->type)
+             { 
+                 size=sem_A_TYPE(id->type);
+                 // usual unary conversion of parm type 
+                 if (id->type==char_type)
+                     id->type=int_type;
+                 else if (isArrayType(id->type)){
+                     id->type->kind=T_POINTER;
+                     id->type->size=4;
+                 }
+                 else if (isFunctionType(id->type)) {
+                     t=makeType(T_POINTER); 
+                     t->element_type=id->type; 
+                     t->size=4;
+                     id->type=t; 
+                 }
+                 size=id->type->size; 
+                 if (size%4)
+                     size=size/4*4+4; 
+                 id->address=addr;
+             }
+             break; 
+         case ID_TYPE:
+             i=sem_A_TYPE(id->type);
+             break; 
+      default:
             semantic_error(89,id->line,id->name);
             break; 
     }
@@ -974,7 +921,7 @@ BOOLEAN isPointerType(A_TYPE *t) {
     else
         return(FALSE);
 }
-BOOLEAN isPointerOrArrayType(A_TYPE *t) {
+BOOLEAN isPointerOrArrayType_sem(A_TYPE *t) {
     if (t && ( t->kind==T_POINTER || t->kind == T_ARRAY)) 
         return(TRUE);
     else

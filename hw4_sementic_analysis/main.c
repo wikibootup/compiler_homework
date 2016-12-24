@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "type.h"
+#include "sementic.h"
+
 extern FILE *yyin;
 extern int syntax_err;
 extern A_NODE *root;
 FILE *fout;
 void initialize();
 void print_ast();
+void print_sem_ast();
 extern FILE *yyin;
 
 int main(int argc, char *argv[]) {
@@ -20,14 +23,19 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     
-    printf("\nstart syntax analysis\n"); initialize();
+    printf("\nstart syntax analysis\n"); 
+    initialize();
     
     yyparse();
     
     if (syntax_err)
         exit(1);
-    
-    print_ast(root);
+    print_ast(root);// for syntax parse tree    
+
+    printf("start semantic analysis\n"); 
+    semantic_analysis(root);
+    print_sem_ast(root);
+
     exit(0);
 
     return 0;

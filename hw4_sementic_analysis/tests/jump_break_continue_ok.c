@@ -1,0 +1,10 @@
+main()
+{
+    while(1)
+    {
+        if(1)
+            continue;
+        else
+            break;
+    }
+}
