@@ -8,21 +8,26 @@
 
 %}
 
-%token DIGIT TWO_DIGITS COLON
+%token DIGIT COLON AMPM
 
 %%
 program:
-        program time '\n'
+        H '\n'
         |
         ;
 
-time:
-        hour
+H:
+        DIGIT COLON M
+        | DIGIT T
         ;
 
-hour:
-        DIGIT                         { $$ = $1; }
-        | TWO_DIGITS                    { $$ = $1; }
+M:
+        DIGIT T
+        ;
+
+T:
+        AMPM
+        |
         ;
 %%
 

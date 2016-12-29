@@ -1,28 +1,26 @@
-digit [0-9] 
-letter [a-zA-Z_] 
-ws {delim}+
+digit [0-9]
 
 %{
     #include "y.tab.h"
+
     extern int yylval;
 %}
 
 %%
 
-"\:"		{ return(COLON); } 
-
 {digit}    { 
-    yylval = atoi(yytext); 
     return DIGIT;
 }
 
-{digit}{digit}    { 
-    yylval = atoi(yytext); 
-    return TWO_DIGITS;
+"\:"    {
+    return COLON;
+}
+
+(am)|(pm)|(AM)|(PM) {
+    return AMPM;
 }
 
 %%
-
 
 yywrap()
 {
